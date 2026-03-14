@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import { useAuthStore } from '../store/authStore';
 import { LogIn } from 'lucide-react';
 
@@ -18,15 +18,15 @@ const Login = () => {
         setLoading(true);
 
         try {
-            // Direct call to API
-            const res = await axios.post('http://localhost:5000/api/auth/login', {
+            // Call login via configured API
+            const res = await api.post('/auth/login', {
                 email,
                 password,
             });
             setAuth(res.data.token, res.data.user);
             navigate('/');
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Error al iniciar sesión');
+            setError(err.message || 'Error al iniciar sesión');
         } finally {
             setLoading(false);
         }

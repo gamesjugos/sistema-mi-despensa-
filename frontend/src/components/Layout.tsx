@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { LayoutDashboard, Users, CalendarDays, ShieldCheck, LogOut, Menu, X } from 'lucide-react';
@@ -23,6 +23,36 @@ const Layout = ({ children }: LayoutProps) => {
         logout();
         navigate('/login');
     };
+
+    // Auto-logout after 1 minute of inactivity
+    useEffect(() => {
+        let timeoutId: ReturnType<typeof setTimeout>;
+
+        const resetTimer = () => {
+            clearTimeout(timeoutId);
+            // 60000 ms = 1 minute
+            timeoutId = setTimeout(() => {
+                handleLogout();
+            }, 60000);
+        };
+
+        // Start the timer
+        resetTimer();
+
+        // Add event listeners for user activity
+        const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+        events.forEach((event) => {
+            document.addEventListener(event, resetTimer);
+        });
+
+        // Cleanup on unmount
+        return () => {
+            clearTimeout(timeoutId);
+            events.forEach((event) => {
+                document.removeEventListener(event, resetTimer);
+            });
+        };
+    }, []);
 
     const SidebarContent = () => (
         <>

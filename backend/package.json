@@ -1,7 +1,7 @@
 {
-  "name": "vikingos-backend",
+  "name": "midespensa-dashboard-api",
   "version": "1.0.0",
-  "description": "Backend for Vikingos Dashboard",
+  "description": "API for Mi Despensa",
   "main": "dist/server.js",
   "scripts": {
     "start": "node dist/server.js",

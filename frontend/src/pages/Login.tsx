@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { useAuthStore } from '../store/authStore';
@@ -7,18 +7,32 @@ import { LogIn } from 'lucide-react';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [rememberEmail, setRememberEmail] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const setAuth = useAuthStore((state) => state.setAuth);
+
+    useEffect(() => {
+        const savedEmail = localStorage.getItem('savedEmail');
+        if (savedEmail) {
+            setEmail(savedEmail);
+            setRememberEmail(true);
+        }
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setLoading(true);
 
+        if (rememberEmail) {
+            localStorage.setItem('savedEmail', email);
+        } else {
+            localStorage.removeItem('savedEmail');
+        }
+
         try {
-            // Call login via configured API
             const res = await api.post('/auth/login', {
                 email,
                 password,
@@ -36,12 +50,15 @@ const Login = () => {
         <div className="min-h-screen flex items-center justify-center bg-dark-bg text-slate-100 p-4">
             <div className="w-full max-w-md">
                 <div className="text-center mb-10 flex flex-col items-center">
-                    <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-[#121212] shadow-2xl mb-4 bg-white dark:bg-black relative group">
-                        <div className="absolute inset-0 bg-primary-500/10 group-hover:bg-transparent transition-colors z-10"></div>
-                        <img src="/logo.png" alt="Vikingos Logo" className="w-full h-full object-cover scale-[1.15] z-0" />
+                    <div className="w-32 h-32 rounded-3xl overflow-hidden shadow-2xl mb-6 bg-white flex items-center justify-center p-2 relative group">
+                        <img 
+                            src="/recurso2.jpg" 
+                            alt="Mi Despensa Logo" 
+                            className="w-full h-full object-contain mix-blend-multiply" 
+                        />
                     </div>
-                    <h1 className="text-4xl font-bold tracking-tighter text-white mb-2">Vikingos GC</h1>
-                    <p className="text-slate-400">Panel administrativo</p>
+                    <h1 className="text-4xl font-bold tracking-tighter text-white mb-2">Mi Despensa</h1>
+                    <p className="text-slate-400">Panel Administrativo</p>
                 </div>
 
                 <div className="bg-dark-card border border-dark-border rounded-2xl shadow-2xl p-8">
@@ -60,7 +77,7 @@ const Login = () => {
                                 type="email"
                                 required
                                 className="input focus:ring-primary-600 bg-[#121212] border-dark-border text-white placeholder-slate-500"
-                                placeholder="admin@vikingos.com"
+                                placeholder="admin@midespensa.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
@@ -76,6 +93,19 @@ const Login = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
+                        </div>
+
+                        <div className="flex items-center">
+                            <input
+                                id="remember_email"
+                                type="checkbox"
+                                checked={rememberEmail}
+                                onChange={(e) => setRememberEmail(e.target.checked)}
+                                className="w-4 h-4 text-primary-600 bg-dark-bg border-dark-border rounded focus:ring-primary-500 focus:ring-offset-dark-bg"
+                            />
+                            <label htmlFor="remember_email" className="ml-2 text-sm text-slate-400 cursor-pointer hover:text-slate-300 transition-colors">
+                                Recordar correo
+                            </label>
                         </div>
 
                         <button

@@ -9,8 +9,7 @@ interface LayoutProps {
 
 const navItems = [
     { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
-    { to: '/players', icon: Users, label: 'Jugadores' },
-    { to: '/payments', icon: CalendarDays, label: 'Pagos' },
+    { to: '/employees', icon: Users, label: 'Empleados' },
     { to: '/admins', icon: ShieldCheck, label: 'Admins' },
 ];
 
@@ -59,11 +58,11 @@ const Layout = ({ children }: LayoutProps) => {
             {/* Logo */}
             <div className="p-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border-2 border-primary-500/20 shadow-sm bg-white dark:bg-black">
-                        <img src="/logo.png" alt="Vikingos Logo" className="w-full h-full object-cover scale-110" />
+                    <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border-2 border-primary-500/20 shadow-sm bg-white dark:bg-black flex items-center justify-center font-bold text-primary-500">
+                        MD
                     </div>
                     <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <span className="text-primary-600">Vikingos</span>
+                        <span className="text-primary-600">Mi Despensa</span>
                         <span className="text-[10px] font-bold px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-slate-500 uppercase tracking-widest">PRO</span>
                     </h1>
                 </div>
@@ -152,11 +151,11 @@ const Layout = ({ children }: LayoutProps) => {
                             <Menu size={22} />
                         </button>
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 shadow-sm bg-white dark:bg-black border border-primary-500/20">
-                                <img src="/logo.png" alt="Logo" className="w-full h-full object-cover scale-110" />
+                            <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 shadow-sm bg-white dark:bg-black border border-primary-500/20 flex items-center justify-center font-bold text-primary-500">
+                                MD
                             </div>
                             <h1 className="text-lg font-bold text-slate-900 dark:text-white">
-                                <span className="text-primary-600">Vikingos</span>
+                                <span className="text-primary-600">Mi Despensa</span>
                             </h1>
                         </div>
                     </div>

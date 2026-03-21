@@ -5,9 +5,7 @@ import { useAuthStore } from './store/authStore';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import Players from './pages/Players';
-import PlayerDetail from './pages/PlayerDetail';
-import Payments from './pages/Payments';
+import Employees from './pages/Employees';
 import Admins from './pages/Admins';
 import NotFound from './pages/NotFound';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -47,21 +45,9 @@ function App() {
                     {/* Protected Routes */}
                     <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
-                    <Route path="/players" element={
+                    <Route path="/employees" element={
                         <ProtectedRoute>
-                            <Players />
-                        </ProtectedRoute>
-                    } />
-
-                    <Route path="/players/:id" element={
-                        <ProtectedRoute>
-                            <PlayerDetail />
-                        </ProtectedRoute>
-                    } />
-
-                    <Route path="/payments" element={
-                        <ProtectedRoute>
-                            <Payments />
+                            <Employees />
                         </ProtectedRoute>
                     } />
 

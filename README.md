@@ -1,80 +1,66 @@
-# Vikingos Dashboard de Gestión Deportiva 🏀
+# Mi Despensa - Panel Administrativo 🏢
 
-Este es el proyecto full-stack para la gestión de jugadores de baloncesto del equipo Vikingos, desarrollado con un backend en Node (Express, TypeScript, Prisma, PostgreSQL) y un frontend en React (Vite, TailwindCSS).
+Este es el sistema administrativo web full-stack desarrollado a medida para la gestión unificada de empleados de **Mi Despensa** y su filial **Mi Contenedor**. Está diseñado para tener una interfaz moderna, limpia y altamente funcional.
 
 ## 🗂️ Estructura del Proyecto
 
 ```bash
-📦 vikingos-dashboard
- ┣ 📂 backend     # API REST + Prisma + JWT Auth
- ┗ 📂 frontend    # React + Vite + Tailwind + FullCalendar
+📦 mi-despensa-dashboard
+ ┣ 📂 backend     # API REST + Prisma ORM + PostgreSQL + Auth
+ ┗ 📂 frontend    # React + Vite + Tailwind CSS + Zustand + Exportador Excel
 ```
 
-## 🚀 Requisitos Previos
+## ✨ Características Principales
 
-- **Node.js**: v18 o superior
-- **PostgreSQL**: Instancia local o en la nube (ej. Render, Supabase)
-- **Git**
+- **Gestión Dual de Empresas**: Registra, filtra y administra empleados separándolos por empresa (`Mi Despensa` o `Mi Contenedor`).
+- **Control Detallado de Empleados**: Almacena nombres completos, cargos, y las fechas exactas de ingreso y egreso.
+- **Exportación en Excel Avanzada**: Descarga reportes automáticos en `.xlsx` con columnas auto-ajustables, encabezados congelados y estilos visuales basados en la empresa de cada empleado.
+- **Inicio de Sesión Seguro**: Acceso restringido por credenciales encriptadas, sistema de "Recordar Correo" y JWT de seguridad.
+- **Diseño Responsivo (PWA)**: Preparado para utilizarse cómodamente tanto desde computadoras de escritorio como desde dispositivos móviles, e instalable como una App.
 
-## 💻 Desarrollo Local
+## 💻 Tecnologías Utilizadas
 
-### 1️⃣ Backend
-1. Entra a `cd backend`
-2. Instala dependencias: `npm install`
-3. Configura `.env`:
+### Backend
+- **Node.js** con **Express.js** (Escrito en TypeScript).
+- **Prisma ORM**: Facilita de manera moderna las consultas a la base de datos.
+- **PostgreSQL**: Base de datos segura montada en la nube usando *Neon*.
+- **JWT & Bcrypt**: Para encriptado de contraseñas de administrador.
+
+### Frontend
+- **React.js** iniciado utilizando **Vite** (Rápido y ligero).
+- **Tailwind CSS**: Para el diseño estético de interfaz de usuario.
+- **Zustand**: Para manejo del esquema de estados (Variables globales).
+- **ExcelJS**: Especial para general el archivo `.xlsx` estilizado de forma nativa.
+- **Lucide React**: El set de íconos vectoriales modernos.
+
+## 🚀 Requisitos y Configuración Local
+
+1. Asegúrate de tener **Node.js** (v18 o superior) instalado en tu equipo.
+
+### 1️⃣ Inicializar Backend
+1. Navega a `cd backend`
+2. Instala las dependencias necesarias: `npm install`
+3. Asegúrate de tener tu archivo `.env` configurado así:
    ```env
    PORT=5000
-   DATABASE_URL="postgresql://user:password@localhost:5432/vikingos?schema=public"
-   JWT_SECRET="secret"
+   DATABASE_URL="postgresql://neondb_owner:npg_J... tu conexión ..."
+   JWT_SECRET="secret_mi_despensa_2026"
    ```
-4. Genera el cliente y sincroniza la DB:
+4. Genera el cliente e inicia el servidor de desarrollo:
    ```bash
    npx prisma generate
-   npx prisma db push
+   npm run dev
    ```
-5. Inicia en desarrollo: `npm run dev`
 
-### 2️⃣ Frontend
-1. Entra a `cd frontend`
+### 2️⃣ Inicializar Frontend
+1. Navega a `cd frontend`
 2. Instala dependencias: `npm install`
-3. Inicia la app: `npm run dev`
+3. Inicia la aplicación visual:
+   ```bash
+   npm run dev
+   ```
+4. Accede en el enlace proporcionado en consola (Usualmente `http://localhost:5173`).
 
-## 🌍 Guía de Despliegue en Render (Producción)
+---
 
-Render es excelente para el stack MERN/PERN. Dividiremos el despliegue en dos partes: un servicio Web Service (Backend) y un Static Site (Frontend).
-
-### Paso 1: Configurar PostgreSQL en Render
-1. En Dashboard de Render: **New > PostgreSQL**.
-2. Ponle nombre (ej: `vikingos-db`) y selecciona la región más cercana.
-3. Copia la URL de conexión interna (para el backend) o externa.
-
-### Paso 2: Desplegar el Backend (Web Service)
-1. En Render: **New > Web Service**.
-2. Conecta tu repositorio de GitHub.
-3. Configuración del servicio:
-   - **Name**: `vikingos-api`
-   - **Environment**: `Node`
-   - **Build Command**: `npm install && npx prisma generate && npm run build`
-   - **Start Command**: `npm start`
-4. Agrega las **Environment Variables**:
-   - `DATABASE_URL`: (Pega la URL del Postgres de Render)
-   - `JWT_SECRET`: (Genera un token seguro)
-   - `PORT`: 5000
-5. Despliega (Deploy).
-
-### Paso 3: Desplegar el Frontend (Static Site o Web Service)
-1. En Render: **New > Static Site**.
-2. Conecta el repositorio de GitHub.
-3. Configuración:
-   - **Name**: `vikingos-dashboard`
-   - **Build Command**: `npm install && npm run build`
-   - **Publish directory**: `dist`
-4. En Avanzado (Advanced), agrega Reglas de Redirección (Redirect/Rewrite Routes) para el SPA Router:
-   - **Source**: `/*`
-   - **Destination**: `/index.html`
-   - **Action**: `Rewrite`
-5. Configura la **Variable de Entorno** para conectarse al backend:
-   - `VITE_API_URL`: (La URL de tu API, ej: `https://vikingos-api.onrender.com/api`)
-6. Despliega (Deploy).
-
-¡Listo! Ya tendrás tu Dashboard Professional corriendo.
+**© 2026 Jesus Ruiz** - Desarrollado y refactorizado de forma exclusiva para Mi Despensa.

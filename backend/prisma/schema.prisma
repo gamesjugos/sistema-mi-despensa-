@@ -12,6 +12,11 @@ enum Role {
   ADMIN
 }
 
+enum Empresa {
+  MI_DESPENSA
+  MI_CONTENEDOR
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
@@ -21,47 +26,17 @@ model User {
   isActive  Boolean  @default(true)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
-  paymentsRegistered Payment[] @relation("AdminPayments")
 }
 
-model Player {
-  id            String    @id @default(uuid())
-  firstName     String
-  lastName      String
-  cedula        String    @unique
-  repCedula     String?   // Representative ID if minor
-  dateOfBirth   DateTime? // Fecha de nacimiento (to compute age)
-  position      String?   // Posicion de juego
-  shoeSize      String?
-  shirtSize     String?
-  stride        String?   // Zancada
-  jumpLongevity String?   // Longevidad de salto
-  height        Float?    // Estatura in cm
-  photoUrl      String?
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  payments      Payment[]
-}
-
-model Payment {
-  id            String   @id @default(uuid())
-  amount        Float
-  paymentDate   DateTime
-  month         Int
-  year          Int
-  receiptImage  String?
-  receiptNumber String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  playerId      String
-  player        Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
-
-  registeredById String?
-  registeredBy   User?   @relation("AdminPayments", fields: [registeredById], references: [id])
-
-  @@index([playerId])
-  @@index([month, year])
-  @@unique([playerId, month, year])
+model Employee {
+  id           String    @id @default(uuid())
+  nombre       String
+  apellido     String
+  cargo        String
+  fechaIngreso DateTime
+  fechaEgreso  DateTime?
+  empresa      Empresa   @default(MI_DESPENSA)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }

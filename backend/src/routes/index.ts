@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import authRoutes from './auth.routes';
-import playerRoutes from './player.routes';
-import paymentRoutes from './payment.routes';
+import employeeRoutes from './employee.routes';
 
 const router = Router();
 
@@ -10,7 +9,6 @@ router.get('/health', (req, res) => {
 });
 
 router.use('/auth', authRoutes);
-router.use('/players', playerRoutes);
-router.use('/payments', paymentRoutes);
+router.use('/employees', employeeRoutes);
 
 export default router;

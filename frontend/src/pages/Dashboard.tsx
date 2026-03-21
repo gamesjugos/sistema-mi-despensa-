@@ -2,30 +2,28 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api';
 import {
-    Users, CreditCard, Clock, TrendingUp,
-    UserPlus, Plus, ChevronRight, CheckCircle2, AlertCircle, ShieldCheck
+    Users, Briefcase, Building, Clock,
+    UserPlus, ChevronRight, CheckCircle2, ShieldCheck
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 interface DashboardStats {
-    totalPlayers: number;
-    activePlayers: number;
-    pendingPayments: number;
-    totalPaidThisMonth: number;
-    recentPayments: any[];
-    recentPlayers: any[];
+    totalEmployees: number;
+    activeEmployees: number;
+    employeesMiDespensa: number;
+    employeesMiContenedor: number;
+    recentEmployees: any[];
 }
 
 const Dashboard = () => {
     const navigate = useNavigate();
     const { user } = useAuthStore();
     const [stats, setStats] = useState<DashboardStats>({
-        totalPlayers: 0,
-        activePlayers: 0,
-        pendingPayments: 0,
-        totalPaidThisMonth: 0,
-        recentPayments: [],
-        recentPlayers: [],
+        totalEmployees: 0,
+        activeEmployees: 0,
+        employeesMiDespensa: 0,
+        employeesMiContenedor: 0,
+        recentEmployees: [],
     });
     const [loading, setLoading] = useState(true);
 
@@ -33,32 +31,15 @@ const Dashboard = () => {
         const fetchAll = async () => {
             setLoading(true);
             try {
-                const [playersRes, payStatsRes, paymentsRes] = await Promise.all([
-                    api.get('/players', { params: { limit: 100 } }),
-                    api.get('/payments/stats'),
-                    api.get('/payments'),
-                ]);
-
-                const allPlayers: any[] = playersRes.data.data || [];
-                const payStats = payStatsRes.data.data || {};
-                const allPayments: any[] = paymentsRes.data.data || [];
-
-                const now = new Date();
-                const currentMonth = now.getMonth() + 1;
-                const currentYear = now.getFullYear();
-
-                const paymentsThisMonth = allPayments.filter(
-                    (p: any) => p.month === currentMonth && p.year === currentYear
-                );
-                const totalPaidThisMonth = paymentsThisMonth.reduce((sum: number, p: any) => sum + Number(p.amount), 0);
+                const res = await api.get('/employees');
+                const allEmployees: any[] = res.data.data || [];
 
                 setStats({
-                    totalPlayers: allPlayers.length,
-                    activePlayers: payStats.activePlayersCount,
-                    pendingPayments: payStats.pendingPayments,
-                    totalPaidThisMonth,
-                    recentPayments: allPayments.slice(0, 5),
-                    recentPlayers: allPlayers.slice(0, 5),
+                    totalEmployees: allEmployees.length,
+                    activeEmployees: allEmployees.filter(e => e.isActive !== false).length,
+                    employeesMiDespensa: allEmployees.filter(e => e.empresa === 'MI_DESPENSA').length,
+                    employeesMiContenedor: allEmployees.filter(e => e.empresa === 'MI_CONTENEDOR').length,
+                    recentEmployees: allEmployees.slice(0, 5),
                 });
             } catch (err) {
                 console.error('Dashboard fetch error:', err);
@@ -72,7 +53,7 @@ const Dashboard = () => {
     const monthName = new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
 
     const StatCard = ({ title, value, sub, icon: Icon, accent, to }: any) => (
-        <Link to={to || '#'} className={`card !p-5 flex items-center gap-4 border-l-4 ${accent} hover:shadow-lg transition-all group`}>
+        <Link to={to || '#'} className={`card !p-5 flex items-center gap-4 border-l-4 ${accent} hover:shadow-lg transition-all group bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-slate-200 dark:border-dark-border`}>
             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${accent.replace('border-l-', 'bg-').replace('-500', '-100')} dark:bg-opacity-10`}>
                 <Icon size={28} className={accent.replace('border-l-', 'text-')} />
             </div>
@@ -89,23 +70,18 @@ const Dashboard = () => {
         </Link>
     );
 
-    const MONTHS = ['', 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-
     return (
         <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
             {/* Header */}
             <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
                 <div>
-                    <p className="text-primary-500 text-sm font-semibold uppercase tracking-widest mb-1">Panel principal</p>
+                    <p className="text-primary-500 text-sm font-semibold uppercase tracking-widest mb-1">Panel Administrativo</p>
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Resumen General</h1>
-                    <p className="text-slate-500 mt-1 capitalize">Estado del equipo • {monthName}</p>
+                    <p className="text-slate-500 mt-1 capitalize">Estado de Empleados • {monthName}</p>
                 </div>
                 <div className="flex gap-3 shrink-0">
-                    <button onClick={() => navigate('/players')} className="btn-outline !py-2 !px-4 !text-sm flex items-center gap-2">
-                        <UserPlus size={16} /> Jugador
-                    </button>
-                    <button onClick={() => navigate('/payments')} className="btn-primary !py-2 !px-4 !text-sm flex items-center gap-2">
-                        <Plus size={16} /> Pago
+                    <button onClick={() => navigate('/employees')} className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-medium transition-colors flex items-center gap-2">
+                        <UserPlus size={16} /> Empleado
                     </button>
                 </div>
             </header>
@@ -113,126 +89,71 @@ const Dashboard = () => {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
                 <StatCard
-                    title="Total Jugadores"
-                    value={stats.totalPlayers}
-                    sub="Registrados en el sistema"
+                    title="Total Empleados"
+                    value={stats.totalEmployees}
+                    sub="En ambas empresas"
                     icon={Users}
                     accent="border-l-blue-500"
-                    to="/players"
+                    to="/employees"
                 />
                 <StatCard
-                    title="Jugadores Activos"
-                    value={stats.activePlayers}
-                    sub="Con membresía vigente"
+                    title="Empleados Activos"
+                    value={stats.activeEmployees}
+                    sub="Actualmente trabajando"
                     icon={CheckCircle2}
                     accent="border-l-emerald-500"
-                    to="/players"
+                    to="/employees"
                 />
                 <StatCard
-                    title="Pagos Pendientes"
-                    value={stats.pendingPayments}
-                    sub={`Sin pago en ${monthName}`}
-                    icon={AlertCircle}
-                    accent="border-l-red-500"
-                    to="/payments"
+                    title="Mi Despensa"
+                    value={stats.employeesMiDespensa}
+                    sub="Empleados asignados"
+                    icon={Building}
+                    accent="border-l-purple-500"
+                    to="/employees"
                 />
                 <StatCard
-                    title="Recaudado (Mes)"
-                    value={loading ? '...' : `$${stats.totalPaidThisMonth.toLocaleString('es-ES', { minimumFractionDigits: 0 })}`}
-                    sub={`Ingresos de ${monthName}`}
-                    icon={TrendingUp}
-                    accent="border-l-primary-500"
-                    to="/payments"
+                    title="Mi Contenedor"
+                    value={stats.employeesMiContenedor}
+                    sub="Empleados asignados"
+                    icon={Briefcase}
+                    accent="border-l-orange-500"
+                    to="/employees"
                 />
             </div>
 
-            {/* Recent Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-                {/* Recent Payments */}
-                <div className="card !p-0 overflow-hidden">
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-dark-border">
-                        <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                            <CreditCard size={18} className="text-primary-500" /> Últimos Pagos
-                        </h2>
-                        <Link to="/payments" className="text-xs text-primary-500 hover:underline font-semibold">Ver todos →</Link>
+            {/* Recent Employees */}
+            <div className="bg-white dark:bg-dark-card rounded-2xl shadow-sm border border-slate-200 dark:border-dark-border overflow-hidden">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-dark-border">
+                    <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <Users size={18} className="text-blue-500" /> Empleados Recientes
+                    </h2>
+                    <Link to="/employees" className="text-xs text-primary-500 hover:underline font-semibold">Ver todos →</Link>
+                </div>
+                {loading ? (
+                    <div className="p-6 space-y-3">
+                        {[1, 2, 3].map(i => <div key={i} className="h-12 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />)}
                     </div>
-                    {loading ? (
-                        <div className="p-6 space-y-3">
-                            {[1, 2, 3].map(i => <div key={i} className="h-12 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />)}
-                        </div>
-                    ) : stats.recentPayments.length === 0 ? (
-                        <div className="p-10 text-center text-slate-400 text-sm">Sin pagos registrados aún.</div>
-                    ) : (
-                        <div className="divide-y divide-slate-100 dark:divide-dark-border">
-                            {stats.recentPayments.map((payment: any) => (
-                                <div key={payment.id} className="flex items-center gap-4 px-6 py-3 hover:bg-slate-50 dark:hover:bg-[#121212] transition-colors">
-                                    <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center shrink-0">
-                                        <CheckCircle2 size={18} className="text-emerald-500" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="font-semibold text-sm text-slate-900 dark:text-white truncate">
-                                            {payment.player?.firstName} {payment.player?.lastName}
-                                        </p>
-                                        <div className="flex items-center gap-2 mt-0.5">
-                                            <p className="text-xs text-slate-400">{MONTHS[payment.month]} {payment.year}</p>
-                                            {user?.role === 'SUPERADMIN' && payment.registeredBy && (
-                                                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400 border border-amber-200/50 dark:border-amber-700/30 flex items-center gap-1">
-                                                    <ShieldCheck size={10} /> {payment.registeredBy.name.split(' ')[0]}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm shrink-0">
-                                        ${Number(payment.amount).toFixed(0)}
-                                    </span>
+                ) : stats.recentEmployees.length === 0 ? (
+                    <div className="p-10 text-center text-slate-400 text-sm">Sin empleados registrados aún.</div>
+                ) : (
+                    <div className="divide-y divide-slate-100 dark:divide-dark-border">
+                        {stats.recentEmployees.map((emp) => (
+                            <Link key={emp.id} to="/employees"
+                                className="flex items-center gap-4 px-6 py-3 hover:bg-slate-50 dark:hover:bg-[#121212] transition-colors group">
+                                <div className="flex-1 min-w-0">
+                                    <p className="font-semibold text-sm text-slate-900 dark:text-white truncate group-hover:text-primary-600">
+                                        {emp.nombre} {emp.apellido}
+                                    </p>
+                                    <p className="text-xs text-slate-400">{emp.cargo} • {new Date(emp.fechaIngreso).toLocaleDateString()}</p>
                                 </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-
-                {/* Recent Players */}
-                <div className="card !p-0 overflow-hidden">
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-dark-border">
-                        <h2 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                            <Users size={18} className="text-blue-500" /> Jugadores Recientes
-                        </h2>
-                        <Link to="/players" className="text-xs text-primary-500 hover:underline font-semibold">Ver todos →</Link>
+                                <span className={`text-xs font-bold px-2 py-1 rounded-lg ${emp.empresa === 'MI_DESPENSA' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>
+                                    {emp.empresa.replace('_', ' ')}
+                                </span>
+                            </Link>
+                        ))}
                     </div>
-                    {loading ? (
-                        <div className="p-6 space-y-3">
-                            {[1, 2, 3].map(i => <div key={i} className="h-12 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />)}
-                        </div>
-                    ) : stats.recentPlayers.length === 0 ? (
-                        <div className="p-10 text-center text-slate-400 text-sm">Sin jugadores registrados aún.</div>
-                    ) : (
-                        <div className="divide-y divide-slate-100 dark:divide-dark-border">
-                            {stats.recentPlayers.map((player: any) => (
-                                <Link key={player.id} to={`/players/${player.id}`}
-                                    className="flex items-center gap-4 px-6 py-3 hover:bg-slate-50 dark:hover:bg-[#121212] transition-colors group">
-                                    <div className="w-9 h-9 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0">
-                                        {player.photoUrl
-                                            ? <img src={player.photoUrl} alt="" className="w-full h-full object-cover" />
-                                            : <div className="w-full h-full flex items-center justify-center text-xs font-bold text-slate-400">
-                                                {player.firstName?.charAt(0)}{player.lastName?.charAt(0)}
-                                            </div>
-                                        }
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="font-semibold text-sm text-slate-900 dark:text-white truncate group-hover:text-primary-600">
-                                            {player.firstName} {player.lastName}
-                                        </p>
-                                        <p className="text-xs text-slate-400">{player.position || 'Sin posición'} • {player.cedula}</p>
-                                    </div>
-                                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${player.isActive ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-500'}`}>
-                                        {player.isActive ? 'Activo' : 'Inactivo'}
-                                    </span>
-                                </Link>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                )}
             </div>
         </div>
     );

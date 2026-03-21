@@ -2,30 +2,29 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
         react(),
         VitePWA({
             registerType: 'autoUpdate',
-            includeAssets: ['logo.png'],
+            includeAssets: ['recurso2.jpg'],
             manifest: {
-                name: 'Vikingos PRO',
-                short_name: 'Vikingos',
-                description: 'Panel administrativo para la Fundación Vikingos de Monagas',
-                theme_color: '#050505',
-                background_color: '#050505',
+                name: 'Mi Despensa Dashboard',
+                short_name: 'Mi Despensa',
+                description: 'Panel administrativo para la gestión de empleados de Mi Despensa y Mi Contenedor.',
+                theme_color: '#ffffff',
+                background_color: '#ffffff',
                 display: 'standalone',
                 icons: [
                     {
-                        src: 'logo.png',
+                        src: 'recurso2.jpg',
                         sizes: '192x192',
-                        type: 'image/png'
+                        type: 'image/jpeg'
                     },
                     {
-                        src: 'logo.png',
+                        src: 'recurso2.jpg',
                         sizes: '512x512',
-                        type: 'image/png'
+                        type: 'image/jpeg'
                     }
                 ]
             }

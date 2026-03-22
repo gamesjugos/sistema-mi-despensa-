@@ -5,7 +5,9 @@ export interface Employee {
     id: string;
     nombre: string;
     apellido: string;
+    cedula: string;
     cargo: string;
+    sueldoMensual: number;
     fechaIngreso: string;
     fechaEgreso?: string | null;
     empresa: 'MI_DESPENSA' | 'MI_CONTENEDOR';

@@ -29,14 +29,50 @@ model User {
 }
 
 model Employee {
-  id           String    @id @default(uuid())
+  id           String         @id @default(uuid())
   nombre       String
   apellido     String
+  cedula       String         @unique @default(uuid()) // Add a temporary default sequence to avoid breaking existing data
   cargo        String
+  sueldoMensual Float         @default(0)
   fechaIngreso DateTime
   fechaEgreso  DateTime?
-  empresa      Empresa   @default(MI_DESPENSA)
-  isActive     Boolean   @default(true)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  empresa      Empresa        @default(MI_DESPENSA)
+  isActive     Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  nominas      NominaRecord[]
+}
+
+model NominaConfig {
+  id             String   @id @default("default")
+  tasaDelDia     Float    @default(36.10)
+  valorCesta     Float    @default(1.33)  // Valor diario ejemplo
+  valorCesta2    Float    @default(40.0)  // Bono Cestaticket Adicional Base Moneda Extranjera
+  porcentajeSSO  Float    @default(4.0)
+  porcentajeFAOV Float    @default(1.0)
+  porcentajeParo Float    @default(0.5)
+  porcentajeISLR Float    @default(0.0)
+  updatedAt      DateTime @updatedAt
+}
+
+model NominaRecord {
+  id                 String   @id @default(uuid())
+  employeeId         String
+  employee           Employee @relation(fields: [employeeId], references: [id])
+  mes                Int
+  anio               Int
+  diasTrabajados     Float    @default(30)
+  horasNocturnas     Float    @default(0)
+  domingosTrabajados Float    @default(0)
+  feriadosTrabajados Float    @default(0)
+  bonosAdicionales   Float    @default(0)
+  adelantos          Float    @default(0)
+  inasistencias      Float    @default(0)
+  subsidios          Float    @default(0)
+  cesta2ManualOverride Float? // if the user inputs a specific override
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@unique([employeeId, mes, anio])
 }

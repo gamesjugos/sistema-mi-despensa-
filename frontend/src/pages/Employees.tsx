@@ -11,7 +11,9 @@ const Employees = () => {
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
+        cedula: '',
         cargo: '',
+        sueldoMensual: 0,
         fechaIngreso: '',
         fechaEgreso: '',
         empresa: 'MI_DESPENSA' as 'MI_DESPENSA' | 'MI_CONTENEDOR',
@@ -28,7 +30,9 @@ const Employees = () => {
             setFormData({
                 nombre: emp.nombre,
                 apellido: emp.apellido,
+                cedula: emp.cedula,
                 cargo: emp.cargo,
+                sueldoMensual: emp.sueldoMensual,
                 fechaIngreso: emp.fechaIngreso ? emp.fechaIngreso.split('T')[0] : '',
                 fechaEgreso: emp.fechaEgreso ? emp.fechaEgreso.split('T')[0] : '',
                 empresa: emp.empresa,
@@ -39,7 +43,9 @@ const Employees = () => {
             setFormData({
                 nombre: '',
                 apellido: '',
+                cedula: '',
                 cargo: '',
+                sueldoMensual: 0,
                 fechaIngreso: new Date().toISOString().split('T')[0],
                 fechaEgreso: '',
                 empresa: 'MI_DESPENSA',
@@ -267,6 +273,16 @@ const Employees = () => {
                                 <div>
                                     <label className="block text-sm font-medium mb-1">Apellido</label>
                                     <input required type="text" value={formData.apellido} onChange={e => setFormData({...formData, apellido: e.target.value})} className="w-full px-4 py-2 border rounded-xl dark:bg-dark-bg dark:border-dark-border dark:text-white" />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">Cédula</label>
+                                    <input required type="text" value={formData.cedula} onChange={e => setFormData({...formData, cedula: e.target.value})} className="w-full px-4 py-2 border rounded-xl dark:bg-dark-bg dark:border-dark-border dark:text-white" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">Sueldo Mensual ($)</label>
+                                    <input required type="number" step="0.01" value={formData.sueldoMensual} onChange={e => setFormData({...formData, sueldoMensual: Number(e.target.value)})} className="w-full px-4 py-2 border rounded-xl dark:bg-dark-bg dark:border-dark-border dark:text-white" />
                                 </div>
                             </div>
                             <div>

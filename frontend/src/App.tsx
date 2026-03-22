@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Employees from './pages/Employees';
 import Admins from './pages/Admins';
+import Nomina from './pages/Nomina';
 import NotFound from './pages/NotFound';
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -48,6 +49,12 @@ function App() {
                     <Route path="/employees" element={
                         <ProtectedRoute>
                             <Employees />
+                        </ProtectedRoute>
+                    } />
+
+                    <Route path="/nomina" element={
+                        <ProtectedRoute>
+                            <Nomina />
                         </ProtectedRoute>
                     } />
 

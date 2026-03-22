@@ -33,9 +33,9 @@ export const getEmployeeById = async (req: Request, res: Response) => {
 
 export const createEmployee = async (req: Request, res: Response) => {
     try {
-        const { nombre, apellido, cargo, fechaIngreso, fechaEgreso, empresa } = req.body;
+        const { nombre, apellido, cargo, fechaIngreso, fechaEgreso, empresa, cedula, sueldoMensual } = req.body;
         
-        if (!nombre || !apellido || !cargo || !fechaIngreso) {
+        if (!nombre || !apellido || !cargo || !fechaIngreso || !cedula) {
             return res.status(400).json({ success: false, message: 'Faltan campos obligatorios' });
         }
 
@@ -44,6 +44,8 @@ export const createEmployee = async (req: Request, res: Response) => {
                 nombre,
                 apellido,
                 cargo,
+                cedula,
+                sueldoMensual: sueldoMensual ? Number(sueldoMensual) : 0,
                 fechaIngreso: new Date(fechaIngreso),
                 fechaEgreso: fechaEgreso ? new Date(fechaEgreso) : null,
                 empresa: empresa || 'MI_DESPENSA'
@@ -60,11 +62,13 @@ export const createEmployee = async (req: Request, res: Response) => {
 export const updateEmployee = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { nombre, apellido, cargo, fechaIngreso, fechaEgreso, empresa, isActive } = req.body;
+        const { nombre, apellido, cargo, fechaIngreso, fechaEgreso, empresa, isActive, cedula, sueldoMensual } = req.body;
 
         const dataToUpdate: any = {};
         if (nombre) dataToUpdate.nombre = nombre;
         if (apellido) dataToUpdate.apellido = apellido;
+        if (cedula !== undefined) dataToUpdate.cedula = cedula;
+        if (sueldoMensual !== undefined) dataToUpdate.sueldoMensual = Number(sueldoMensual);
         if (cargo) dataToUpdate.cargo = cargo;
         if (fechaIngreso) dataToUpdate.fechaIngreso = new Date(fechaIngreso);
         if (fechaEgreso !== undefined) dataToUpdate.fechaEgreso = fechaEgreso ? new Date(fechaEgreso) : null;

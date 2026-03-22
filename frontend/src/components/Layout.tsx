@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { LayoutDashboard, Users, CalendarDays, ShieldCheck, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, CalendarDays, ShieldCheck, LogOut, Menu, X, Banknote } from 'lucide-react';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -10,6 +10,7 @@ interface LayoutProps {
 const navItems = [
     { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
     { to: '/employees', icon: Users, label: 'Empleados' },
+    { to: '/nomina', icon: Banknote, label: 'Nómina' },
     { to: '/admins', icon: ShieldCheck, label: 'Admins' },
 ];
 

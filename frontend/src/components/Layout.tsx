@@ -11,6 +11,7 @@ const navItems = [
     { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
     { to: '/employees', icon: Users, label: 'Empleados' },
     { to: '/nomina', icon: Banknote, label: 'Nómina' },
+    { to: '/cestatickets', icon: CalendarDays, label: 'Cestatickets' },
     { to: '/admins', icon: ShieldCheck, label: 'Admins' },
 ];
 

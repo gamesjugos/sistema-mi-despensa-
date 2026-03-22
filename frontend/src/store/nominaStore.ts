@@ -135,7 +135,7 @@ export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<N
 
     const subtotalIngresos = sueldoReal + bonoNocturno + domingosValor + feriadosValor;
 
-    const cestaticket2 = config.montoCesta2 * config.tasaBCV1;
+    const cestaticket2 = (config.montoCesta2 * config.tasaBCV1 / 30) * r.diasTrabajados;
     const cestaticket1 = (config.montoCesta1 * config.tasaBCV1 / 30) * r.diasTrabajados;
 
     const ingresoTotalIndexado = subtotalIngresos + cestaticket2 + cestaticket1;

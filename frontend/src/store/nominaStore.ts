@@ -30,6 +30,7 @@ export interface NominaRecord {
     inasistencias: number;
     subsidios: number;
     cesta2ManualOverride: number | null;
+    aplicaPensiones?: boolean;
 }
 
 interface NominaState {
@@ -54,7 +55,7 @@ export const useNominaStore = create<NominaState>((set) => ({
         porcentajeFAOV: 1.0,
         porcentajeParo: 0.5,
         porcentajeISLR: 0.0,
-        aportePensiones: 160.0,
+        aportePensiones: 11.7, 
     },
     records: [],
     loading: false,
@@ -117,6 +118,7 @@ export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<N
         adelantos: 0,
         inasistencias: 0,
         subsidios: 0,
+        aplicaPensiones: true,
         ...record
     };
 
@@ -125,33 +127,24 @@ export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<N
     const sueldoHora = sueldoDiario / 8;
     const sueldoSemanal = (sueldoMensual * 12) / 52;
 
-    // BONOS: We treat r.bonosAdicionales as Bono Nocturno raw $ amount (as seen in excel).
-    // And feriadosTrabajados as a numeric multiplier (or you can just type raw amount in UI). We'll assume feriadosTrabajados is just typed as $ for Domingo and Feriado
-    const bonoNocturno = r.horasNocturnas; // Treated as fixed monetary in excel
-    const domingosValor = r.domingosTrabajados; // Treated as monetary
-    const feriadosValor = r.feriadosTrabajados; // Treated as monetary
+    const bonoNocturno = r.horasNocturnas;
+    const domingosValor = r.domingosTrabajados;
+    const feriadosValor = r.feriadosTrabajados;
 
-    // SUELDO: Prorated by diasTrabajados
     const sueldoReal = sueldoDiario * r.diasTrabajados;
 
     const subtotalIngresos = sueldoReal + bonoNocturno + domingosValor + feriadosValor;
 
-    // CESTATICKET
     const cestaticket2 = config.montoCesta2 * config.tasaBCV1;
-    const cestaticket1 = (config.montoCesta1 * config.tasaBCV2 / 30) * r.diasTrabajados;
+    const cestaticket1 = (config.montoCesta1 * config.tasaBCV1 / 30) * r.diasTrabajados;
 
-    // INGRESO INDEXADO
     const ingresoTotalIndexado = subtotalIngresos + cestaticket2 + cestaticket1;
 
-    // DEDUCCIONES
-    // The Excel takes Weekly Salary * 4 weeks * 4% for SSO if the person works full month.
-    // Excel formula: = SALARIO_SEMANAL * 4 * (PORCENTAJE / 100)
     const factorDeduccion = sueldoSemanal * 4;
     const sso = factorDeduccion * (config.porcentajeSSO / 100);
     const rpe = factorDeduccion * (config.porcentajeParo / 100);
     const faov = factorDeduccion * (config.porcentajeFAOV / 100);
     
-    // ISLR Retention
     const islrPercent = config.porcentajeISLR || 0;
     const islrValue = subtotalIngresos * (islrPercent / 100);
 
@@ -159,6 +152,8 @@ export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<N
 
     let aPagar = subtotalIngresos - totalDeducciones + Number(r.subsidios);
     if (aPagar < 0) aPagar = 0;
+
+    const aportePensionesCalc = r.aplicaPensiones ? config.aportePensiones : 0;
 
     return {
         sueldoDiario,
@@ -177,6 +172,7 @@ export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<N
         faov,
         islrValue,
         totalDeducciones,
-        aPagar
+        aPagar,
+        aportePensionesCalc
     };
 };

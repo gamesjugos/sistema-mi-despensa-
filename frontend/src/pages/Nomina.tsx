@@ -49,7 +49,8 @@ export default function Nomina() {
                 bonosAdicionales: 0,
                 adelantos: 0,
                 inasistencias: 0,
-                subsidios: 0
+                subsidios: 0,
+                aplicaPensiones: true
             };
             const calc = calculatePayroll(emp, existingRecord, config);
             return { emp, record: existingRecord, calc };
@@ -73,8 +74,13 @@ export default function Nomina() {
             bonosAdicionales: 0,
             adelantos: 0,
             inasistencias: 0,
-            subsidios: 0
+            subsidios: 0,
+            aplicaPensiones: true
         };
+        // Normalize aplicaPensiones in case it's undefined
+        if (existingRecord.aplicaPensiones === undefined) {
+             existingRecord.aplicaPensiones = true;
+        }
         setRecordForm(existingRecord);
         setSueldoForm(emp.sueldoMensual || 0);
         setEditingEmp(emp);
@@ -110,13 +116,14 @@ export default function Nomina() {
             { header: 'CESTATICKETS 2', key: 'cesta2', width: 15 },
             { header: 'CESTATICKETS 1', key: 'cesta1', width: 15 },
             { header: 'INGRESO TOTAL INDEXADO', key: 'indexado', width: 22 },
-            { header: 'SSO', key: 'sso', width: 12 },
-            { header: 'PARO FORZOSO', key: 'pf', width: 15 },
-            { header: 'FAOV', key: 'faov', width: 12 },
+            { header: 'SSO 4%', key: 'sso', width: 12 },
+            { header: 'PARO FORZOSO 0.5%', key: 'pf', width: 18 },
+            { header: 'FAOV 1%', key: 'faov', width: 12 },
             { header: 'ADELANTOS', key: 'adelantos', width: 12 },
             { header: 'INASIST. / OTROS', key: 'inasistencias', width: 18 },
             { header: 'TOTAL DEDUCCIONES', key: 'deducciones', width: 18 },
-            { header: 'NETO A PAGAR', key: 'neto', width: 15 }
+            { header: 'NETO A PAGAR', key: 'neto', width: 15 },
+            { header: 'APORTE PENSIONES (9%)', key: 'pensiones', width: 22 }
         ];
 
         const headerRow = sheet.getRow(1);
@@ -152,9 +159,10 @@ export default function Nomina() {
                 adelantos: row.record.adelantos,
                 inasistencias: row.record.inasistencias,
                 deducciones: row.calc.totalDeducciones,
-                neto: row.calc.aPagar
+                neto: row.calc.aPagar,
+                pensiones: row.calc.aportePensionesCalc
             });
-            [4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23].forEach(colIndex => {
+            [4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24].forEach(colIndex => {
                 dataRow.getCell(colIndex).numFmt = '"$"#,##0.00';
             });
         });
@@ -180,7 +188,8 @@ export default function Nomina() {
             adelantos: payrollData.reduce((a,b)=>a+b.record.adelantos,0),
             inasistencias: payrollData.reduce((a,b)=>a+b.record.inasistencias,0),
             deducciones: payrollData.reduce((a,b)=>a+b.calc.totalDeducciones,0),
-            neto: payrollData.reduce((a,b)=>a+b.calc.aPagar,0)
+            neto: payrollData.reduce((a,b)=>a+b.calc.aPagar,0),
+            pensiones: payrollData.reduce((a,b)=>a+b.calc.aportePensionesCalc,0)
         });
         
         totalsRow.eachCell(cell => {
@@ -250,6 +259,12 @@ export default function Nomina() {
                                 <p className="text-slate-500">Total Deducciones</p>
                                 <p className="font-semibold text-red-500">${numFormat(row.calc.totalDeducciones)}</p>
                             </div>
+                            {row.calc.aportePensionesCalc > 0 && (
+                            <div className="col-span-2 mt-1 border-t border-slate-200 dark:border-slate-800 pt-2 flex justify-between">
+                                <p className="text-slate-500">Aporte Pensiones (Patronal)</p>
+                                <p className="font-bold text-purple-600">${numFormat(row.calc.aportePensionesCalc)}</p>
+                            </div>
+                            )}
                         </div>
                         <button onClick={() => handleOpenEdit(row.emp)} className="mt-4 w-full flex items-center justify-center gap-2 py-2 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition text-sm font-semibold">
                             <Edit3 size={16} /> Ajustar Sueldo y Nómina
@@ -266,6 +281,7 @@ export default function Nomina() {
                         <div className="flex justify-between"><span>Jornada por Hora:</span> <span>${numFormat(payrollData.reduce((a,b)=>a+b.calc.sueldoHora,0))}</span></div>
                         <div className="flex justify-between text-blue-600"><span>Cestaticket Total:</span> <span>Bs. {numFormat(payrollData.reduce((a,b)=>a+b.calc.cestaticket2 + b.calc.cestaticket1,0))}</span></div>
                         <div className="flex justify-between text-red-500"><span>Retenciones Ley (SSO/FAOV/PF):</span> <span>${numFormat(payrollData.reduce((a,b)=>a+b.calc.sso + b.calc.faov + b.calc.rpe,0))}</span></div>
+                        <div className="flex justify-between text-purple-600 font-semibold border-t border-primary-200 dark:border-primary-800 pt-2"><span>Total Aporte Pensiones:</span> <span>${numFormat(payrollData.reduce((a,b)=>a+b.calc.aportePensionesCalc,0))}</span></div>
                     </div>
                 </div>
             </div>
@@ -298,6 +314,7 @@ export default function Nomina() {
                             <th className="p-2">Inasist.</th>
                             <th className="p-2 border-l text-center">Total<br/>Deducc.</th>
                             <th className="p-2 bg-slate-200 dark:bg-slate-800 font-bold border-l-2 border-l-slate-400">A PAGAR ($)</th>
+                            <th className="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 font-bold text-center border-l-2 border-l-slate-400">APORTE<br/>PENSIONES</th>
                             <th className="p-2 sticky right-0 z-30 bg-slate-200 dark:bg-slate-800 text-center">✏️</th>
                         </tr>
                     </thead>
@@ -327,6 +344,7 @@ export default function Nomina() {
                                 <td className="p-2 text-right text-red-500">{numFormat(row.record.inasistencias)}</td>
                                 <td className="p-2 text-right text-red-600 font-bold">{numFormat(row.calc.totalDeducciones)}</td>
                                 <td className="p-2 bg-slate-100 dark:bg-slate-800 font-bold border-l-2 border-l-slate-300 text-right text-base text-green-700 dark:text-green-500">${numFormat(row.calc.aPagar)}</td>
+                                <td className="p-2 border-l-2 border-l-slate-300 bg-purple-50 dark:bg-purple-900/10 font-bold text-purple-700 text-right">${numFormat(row.calc.aportePensionesCalc)}</td>
                                 <td className="p-1 sticky right-0 z-10 bg-white dark:bg-dark-bg text-center">
                                     <button onClick={() => handleOpenEdit(row.emp)} className="p-1 text-primary-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded">
                                         <Edit3 size={14} />
@@ -358,6 +376,7 @@ export default function Nomina() {
                             <td className="p-2 text-right">{numFormat(payrollData.reduce((a,b)=>a+b.record.inasistencias,0))}</td>
                             <td className="p-2 text-right">{numFormat(payrollData.reduce((a,b)=>a+b.calc.totalDeducciones,0))}</td>
                             <td className="p-2 border-l-2 border-l-slate-400 text-right text-green-700 dark:text-green-500 text-lg">${numFormat(totPagado)}</td>
+                            <td className="p-2 border-l-2 border-l-slate-400 text-right text-purple-700 dark:text-purple-400 text-base">${numFormat(payrollData.reduce((a,b)=>a+b.calc.aportePensionesCalc,0))}</td>
                             <td className="sticky right-0 bg-slate-200 dark:bg-slate-800 z-30"></td>
                         </tr>
                     </tfoot>
@@ -404,6 +423,15 @@ export default function Nomina() {
                                     <label className="block text-xs uppercase mb-1 opacity-70">Inasist. ($)</label>
                                     <input min="0" step="0.01" type="number" value={recordForm.inasistencias} onChange={e => setRecordForm({...recordForm, inasistencias: Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
+                                <div className="col-span-2 md:col-span-3 mt-2">
+                                    <label className="flex items-center gap-2 cursor-pointer p-3 border rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-900/10 dark:border-purple-900/40 w-full transition-colors">
+                                        <input type="checkbox" checked={recordForm.aplicaPensiones} onChange={e => setRecordForm({...recordForm, aplicaPensiones: e.target.checked})} className="w-5 h-5 accent-purple-600 rounded" />
+                                        <div>
+                                            <p className="font-bold text-sm text-purple-900 dark:text-purple-100">Aplicar Aporte de Pensiones a este empleado</p>
+                                            <p className="text-xs text-purple-700 dark:text-purple-300">Si desmarcas esta opción el empleado no generará recargo de Aporte a Pensiones.</p>
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
                             <button type="submit" className="w-full mt-4 flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded p-3 transition-colors"><Save size={18}/> Guardar Todos los Ajustes</button>
                         </form>
@@ -413,7 +441,7 @@ export default function Nomina() {
 
             {showConfig && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                    <div className="bg-white dark:bg-dark-card w-full max-w-sm rounded-2xl shadow-xl border border-slate-200 dark:border-dark-border">
+                    <div className="bg-white dark:bg-dark-card w-full max-w-md rounded-2xl shadow-xl border border-slate-200 dark:border-dark-border">
                         <div className="p-4 border-b border-slate-200 dark:border-dark-border flex items-center justify-between">
                             <h2 className="font-bold text-lg">Ajustes Generales</h2>
                             <button onClick={() => setShowConfig(false)}><X className="text-slate-400" /></button>
@@ -424,6 +452,13 @@ export default function Nomina() {
                                 <input min="0" step="0.01" type="number" value={configForm.tasaBCV1} onChange={e => setConfigForm({...configForm, tasaBCV1: Number(e.target.value)})} className="w-full border rounded px-3 py-3 font-bold text-xl dark:bg-black" />
                                 <p className="text-xs text-blue-600 mt-2">Esta tasa se aplicará para calcular tanto la Cesta 1 como la Cesta 2 simultáneamente.</p>
                             </div>
+                            
+                            <div className="bg-purple-50 dark:bg-purple-900/10 p-4 rounded-xl border border-purple-200 dark:border-purple-900/50">
+                                <label className="block text-sm font-bold text-purple-800 dark:text-purple-300 mb-2">Monto de Aporte a Pensiones ($)</label>
+                                <input min="0" step="0.01" type="number" value={configForm.aportePensiones} onChange={e => setConfigForm({...configForm, aportePensiones: Number(e.target.value)})} className="w-full border rounded px-3 py-2 font-bold dark:bg-black" />
+                                <p className="text-xs text-purple-600 mt-2">Monto ($) de la cuota mínima obligatoria que el empleador asigna por esta ley (generalmente el 9% de 130$ = 11.7$). Se refleja sólo de forma administrativa y no afecta el sueldo neto del empleado.</p>
+                            </div>
+
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm mb-1 font-semibold">Monto Base Cesta 1 ($)</label>

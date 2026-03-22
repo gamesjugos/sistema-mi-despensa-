@@ -32,9 +32,9 @@ model Employee {
   id           String         @id @default(uuid())
   nombre       String
   apellido     String
-  cedula       String         @unique @default(uuid()) // Add a temporary default sequence to avoid breaking existing data
+  cedula       String?        @unique
   cargo        String
-  sueldoMensual Float         @default(0)
+  sueldoMensual Float?        @default(0)
   fechaIngreso DateTime
   fechaEgreso  DateTime?
   empresa      Empresa        @default(MI_DESPENSA)

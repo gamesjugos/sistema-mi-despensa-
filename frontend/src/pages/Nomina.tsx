@@ -89,6 +89,111 @@ export default function Nomina() {
         }
     };
 
+    const exportToExcel = async () => {
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet(`Nomina_${monthNames[currentMonth-1]}_${currentYear}`);
+
+        sheet.columns = [
+            { header: 'NOMBRE DEL TRABAJADOR', key: 'nombre', width: 25 },
+            { header: 'C.I.', key: 'cedula', width: 15 },
+            { header: 'CARGO', key: 'cargo', width: 20 },
+            { header: 'SUELDO MENSUAL', key: 'sueldo', width: 15 },
+            { header: 'JORNADA DIARIO', key: 'jdiario', width: 15 },
+            { header: 'JORNADA POR HORA', key: 'jhora', width: 15 },
+            { header: 'SALARIO SEMANAL', key: 'ssem', width: 15 },
+            { header: 'DIAS TRABAJADOS', key: 'dias', width: 15 },
+            { header: 'HORAS NOCTURNAS', key: 'nocturno', width: 15 },
+            { header: 'DOMINGO TRABAJADO', key: 'domingo', width: 18 },
+            { header: 'DIA FERIADO', key: 'feriado', width: 15 },
+            { header: 'SUELDO REAL', key: 'sreal', width: 15 },
+            { header: 'SUBTOTAL INGRESOS', key: 'subtotal', width: 18 },
+            { header: 'CESTATICKETS 2', key: 'cesta2', width: 15 },
+            { header: 'CESTATICKETS 1', key: 'cesta1', width: 15 },
+            { header: 'INGRESO TOTAL INDEXADO', key: 'indexado', width: 22 },
+            { header: 'SSO', key: 'sso', width: 12 },
+            { header: 'PARO FORZOSO', key: 'pf', width: 15 },
+            { header: 'FAOV', key: 'faov', width: 12 },
+            { header: 'ADELANTOS', key: 'adelantos', width: 12 },
+            { header: 'INASIST. / OTROS', key: 'inasistencias', width: 18 },
+            { header: 'TOTAL DEDUCCIONES', key: 'deducciones', width: 18 },
+            { header: 'NETO A PAGAR', key: 'neto', width: 15 }
+        ];
+
+        const headerRow = sheet.getRow(1);
+        headerRow.eachCell((cell) => {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0284C7' } };
+            cell.font = { color: { argb: 'FFFFFFFF' }, bold: true, size: 10 };
+            cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+            cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+        });
+        headerRow.height = 30;
+
+        payrollData.forEach((row) => {
+            const dataRow = sheet.addRow({
+                nombre: `${row.emp.nombre} ${row.emp.apellido}`,
+                cedula: row.emp.cedula,
+                cargo: row.emp.cargo,
+                sueldo: row.emp.sueldoMensual,
+                jdiario: row.calc.sueldoDiario,
+                jhora: row.calc.sueldoHora,
+                ssem: row.calc.sueldoSemanal,
+                dias: row.record.diasTrabajados,
+                nocturno: row.calc.bonoNocturno,
+                domingo: row.calc.domingosValor,
+                feriado: row.calc.feriadosValor,
+                sreal: row.calc.sueldoReal,
+                subtotal: row.calc.subtotalIngresos,
+                cesta2: row.calc.cestaticket2,
+                cesta1: row.calc.cestaticket1,
+                indexado: row.calc.ingresoTotalIndexado,
+                sso: row.calc.sso,
+                pf: row.calc.rpe,
+                faov: row.calc.faov,
+                adelantos: row.record.adelantos,
+                inasistencias: row.record.inasistencias,
+                deducciones: row.calc.totalDeducciones,
+                neto: row.calc.aPagar
+            });
+            [4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23].forEach(colIndex => {
+                dataRow.getCell(colIndex).numFmt = '"$"#,##0.00';
+            });
+        });
+
+        const totalsRow = sheet.addRow({
+            nombre: 'TOTALES GENERALES',
+            sueldo: payrollData.reduce((a,b)=>a+b.emp.sueldoMensual,0),
+            jdiario: payrollData.reduce((a,b)=>a+b.calc.sueldoDiario,0),
+            jhora: payrollData.reduce((a,b)=>a+b.calc.sueldoHora,0),
+            ssem: payrollData.reduce((a,b)=>a+b.calc.sueldoSemanal,0),
+            dias: payrollData.reduce((a,b)=>a+b.record.diasTrabajados,0),
+            nocturno: payrollData.reduce((a,b)=>a+b.calc.bonoNocturno,0),
+            domingo: payrollData.reduce((a,b)=>a+b.calc.domingosValor,0),
+            feriado: payrollData.reduce((a,b)=>a+b.calc.feriadosValor,0),
+            sreal: payrollData.reduce((a,b)=>a+b.calc.sueldoReal,0),
+            subtotal: payrollData.reduce((a,b)=>a+b.calc.subtotalIngresos,0),
+            cesta2: payrollData.reduce((a,b)=>a+b.calc.cestaticket2,0),
+            cesta1: payrollData.reduce((a,b)=>a+b.calc.cestaticket1,0),
+            indexado: payrollData.reduce((a,b)=>a+b.calc.ingresoTotalIndexado,0),
+            sso: payrollData.reduce((a,b)=>a+b.calc.sso,0),
+            pf: payrollData.reduce((a,b)=>a+b.calc.rpe,0),
+            faov: payrollData.reduce((a,b)=>a+b.calc.faov,0),
+            adelantos: payrollData.reduce((a,b)=>a+b.record.adelantos,0),
+            inasistencias: payrollData.reduce((a,b)=>a+b.record.inasistencias,0),
+            deducciones: payrollData.reduce((a,b)=>a+b.calc.totalDeducciones,0),
+            neto: payrollData.reduce((a,b)=>a+b.calc.aPagar,0)
+        });
+        
+        totalsRow.eachCell(cell => {
+            cell.font = { bold: true };
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEEEEEE' } };
+            cell.border = { top: { style: 'medium' }, bottom: { style: 'medium' } };
+        });
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        saveAs(blob, `Nomina_Completa_${monthNames[currentMonth-1]}_${currentYear}.xlsx`);
+    };
+
     const numFormat = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     const totPagado = payrollData.reduce((acc, r) => acc + r.calc.aPagar, 0);
@@ -108,9 +213,8 @@ export default function Nomina() {
                     <button onClick={() => setShowConfig(true)} className="p-2 border border-slate-200 hover:bg-slate-50 dark:border-dark-border dark:hover:bg-dark-bg rounded-xl transition-colors shrink-0">
                         <Settings size={20} className="text-slate-600 dark:text-slate-300" />
                     </button>
-                    {/* Boton Excel Temporalmente Visual para el ejemplo */}
-                    <button onClick={() => alert('Exportar a Excel...')} className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium transition-colors shrink-0 text-sm">
-                        <Download size={18} /> <span className="hidden sm:inline">Exportar</span>
+                    <button onClick={exportToExcel} className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium transition-colors shrink-0 text-sm">
+                        <Download size={18} /> <span className="hidden sm:inline">Exportar Excel</span>
                     </button>
                 </div>
             </div>
@@ -157,7 +261,9 @@ export default function Nomina() {
                     <h3 className="font-bold text-primary-900 dark:text-primary-100 text-lg mb-2">TOTALES GENERALES</h3>
                     <div className="space-y-2 text-sm">
                         <div className="flex justify-between font-bold"><span>Total Netos a Pagar:</span> <span className="text-green-600">${numFormat(totPagado)}</span></div>
-                        <div className="flex justify-between"><span>Subtotal Dólares:</span> <span>${numFormat(payrollData.reduce((a,b)=>a+b.calc.subtotalIngresos,0))}</span></div>
+                        <div className="flex justify-between"><span>Sueldos Asignados:</span> <span>${numFormat(payrollData.reduce((a,b)=>a+b.emp.sueldoMensual,0))}</span></div>
+                        <div className="flex justify-between"><span>Jornada Diaria Promedio:</span> <span>${numFormat(payrollData.reduce((a,b)=>a+b.calc.sueldoDiario,0))}</span></div>
+                        <div className="flex justify-between"><span>Jornada por Hora:</span> <span>${numFormat(payrollData.reduce((a,b)=>a+b.calc.sueldoHora,0))}</span></div>
                         <div className="flex justify-between text-blue-600"><span>Cestaticket Total:</span> <span>Bs. {numFormat(payrollData.reduce((a,b)=>a+b.calc.cestaticket2 + b.calc.cestaticket1,0))}</span></div>
                         <div className="flex justify-between text-red-500"><span>Retenciones Ley (SSO/FAOV/PF):</span> <span>${numFormat(payrollData.reduce((a,b)=>a+b.calc.sso + b.calc.faov + b.calc.rpe,0))}</span></div>
                     </div>
@@ -236,7 +342,7 @@ export default function Nomina() {
                             <td className="p-2 bg-slate-300 dark:bg-slate-700 text-right">{numFormat(payrollData.reduce((a,b)=>a+b.calc.sueldoDiario,0))}</td>
                             <td className="p-2 bg-slate-300 dark:bg-slate-700 text-right">{numFormat(payrollData.reduce((a,b)=>a+b.calc.sueldoHora,0))}</td>
                             <td className="p-2 bg-slate-300 dark:bg-slate-700 text-right">{numFormat(payrollData.reduce((a,b)=>a+b.calc.sueldoSemanal,0))}</td>
-                            <td className="p-2"></td>
+                            <td className="p-2 text-center text-blue-600 dark:text-blue-400">{payrollData.reduce((a,b)=>a+b.record.diasTrabajados,0)}</td>
                             <td className="p-2 text-right">{numFormat(payrollData.reduce((a,b)=>a+b.calc.bonoNocturno,0))}</td>
                             <td className="p-2 text-right">{numFormat(payrollData.reduce((a,b)=>a+b.calc.domingosValor,0))}</td>
                             <td className="p-2 text-right">{numFormat(payrollData.reduce((a,b)=>a+b.calc.feriadosValor,0))}</td>

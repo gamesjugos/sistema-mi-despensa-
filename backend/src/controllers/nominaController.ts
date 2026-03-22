@@ -53,7 +53,7 @@ export const getRecordsByMonth = async (req: Request, res: Response) => {
 
 export const saveRecord = async (req: Request, res: Response) => {
     try {
-        const { employeeId, mes, anio, ...data } = req.body;
+        const { employeeId, mes, anio, id, employee, createdAt, updatedAt, ...data } = req.body;
 
         const record = await prisma.nominaRecord.upsert({
             where: {

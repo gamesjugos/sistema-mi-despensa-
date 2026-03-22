@@ -4,13 +4,15 @@ import { Employee } from './employeeStore';
 
 export interface NominaConfig {
     id: string;
-    tasaDelDia: number;
-    valorCesta: number;
-    valorCesta2: number;
+    tasaBCV1: number;
+    tasaBCV2: number;
+    montoCesta1: number;
+    montoCesta2: number;
     porcentajeSSO: number;
     porcentajeFAOV: number;
     porcentajeParo: number;
     porcentajeISLR: number;
+    aportePensiones: number;
 }
 
 export interface NominaRecord {
@@ -44,13 +46,15 @@ interface NominaState {
 export const useNominaStore = create<NominaState>((set) => ({
     config: {
         id: 'default',
-        tasaDelDia: 36.10,
-        valorCesta: 1.33,
-        valorCesta2: 40.0,
+        tasaBCV1: 437.36,
+        tasaBCV2: 417.36,
+        montoCesta1: 40.0,
+        montoCesta2: 160.0,
         porcentajeSSO: 4.0,
         porcentajeFAOV: 1.0,
         porcentajeParo: 0.5,
         porcentajeISLR: 0.0,
+        aportePensiones: 160.0,
     },
     records: [],
     loading: false,
@@ -59,7 +63,7 @@ export const useNominaStore = create<NominaState>((set) => ({
     fetchConfig: async () => {
         try {
             const { data } = await api.get('/nomina/config');
-            set({ config: data });
+            if (data && data.tasaBCV1) set({ config: data });
         } catch (error: any) {
             console.error('Error fetching config');
         }
@@ -103,7 +107,6 @@ export const useNominaStore = create<NominaState>((set) => ({
     }
 }));
 
-// Utility to calculate Payroll results
 export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<NominaRecord>, config: NominaConfig) => {
     const r = {
         diasTrabajados: 30,
@@ -114,59 +117,66 @@ export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<N
         adelantos: 0,
         inasistencias: 0,
         subsidios: 0,
-        cesta2ManualOverride: null,
         ...record
     };
 
-    // SUELDOS
     const sueldoMensual = emp.sueldoMensual || 0;
     const sueldoDiario = sueldoMensual / 30;
     const sueldoHora = sueldoDiario / 8;
     const sueldoSemanal = (sueldoMensual * 12) / 52;
 
-    // INGRESOS
-    const sueldoGanado = sueldoDiario * r.diasTrabajados;
-    const pagoNocturno = r.horasNocturnas * sueldoHora * 1.3; // Ejemplo de recargo
-    const pagoDomingos = r.domingosTrabajados * sueldoDiario * 1.5; 
-    const pagoFeriados = r.feriadosTrabajados * sueldoDiario * 1.5;
-    
+    // BONOS: We treat r.bonosAdicionales as Bono Nocturno raw $ amount (as seen in excel).
+    // And feriadosTrabajados as a numeric multiplier (or you can just type raw amount in UI). We'll assume feriadosTrabajados is just typed as $ for Domingo and Feriado
+    const bonoNocturno = r.horasNocturnas; // Treated as fixed monetary in excel
+    const domingosValor = r.domingosTrabajados; // Treated as monetary
+    const feriadosValor = r.feriadosTrabajados; // Treated as monetary
+
+    // SUELDO: Prorated by diasTrabajados
+    const sueldoReal = sueldoDiario * r.diasTrabajados;
+
+    const subtotalIngresos = sueldoReal + bonoNocturno + domingosValor + feriadosValor;
+
     // CESTATICKET
-    const cestaticketBase = r.diasTrabajados * config.valorCesta;
-    const cestaticket2 = r.cesta2ManualOverride !== null ? r.cesta2ManualOverride : config.valorCesta2;
+    const cestaticket2 = config.montoCesta2 * config.tasaBCV1;
+    const cestaticket1 = (config.montoCesta1 * config.tasaBCV2 / 30) * r.diasTrabajados;
 
-    const ingresosExtras = pagoNocturno + pagoDomingos + pagoFeriados + Number(r.bonosAdicionales);
-    const ingresosTotales = sueldoGanado + ingresosExtras + cestaticketBase + cestaticket2;
+    // INGRESO INDEXADO
+    const ingresoTotalIndexado = subtotalIngresos + cestaticket2 + cestaticket1;
 
-    // DEDUCCIONES (calculadas sobre el sueldo semanal o base)
-    // SSO suele ser ssoPercent * Salario semanal * Lunes del mes (simplificado según requerimiento)
-    // Aquí implementamos una deducción base simplificada del sueldo ganado:
-    const sso = sueldoGanado * (config.porcentajeSSO / 100);
-    const rpe = sueldoGanado * (config.porcentajeParo / 100);
-    const faov = sueldoGanado * (config.porcentajeFAOV / 100);
-    const islr = sueldoGanado * (config.porcentajeISLR / 100);
+    // DEDUCCIONES
+    // The Excel takes Weekly Salary * 4 weeks * 4% for SSO if the person works full month.
+    // Excel formula: = SALARIO_SEMANAL * 4 * (PORCENTAJE / 100)
+    const factorDeduccion = sueldoSemanal * 4;
+    const sso = factorDeduccion * (config.porcentajeSSO / 100);
+    const rpe = factorDeduccion * (config.porcentajeParo / 100);
+    const faov = factorDeduccion * (config.porcentajeFAOV / 100);
     
-    const deduccionesBase = sso + rpe + faov + islr;
-    const deduccionesTotales = deduccionesBase + Number(r.adelantos) + Number(r.inasistencias); // Las inasistencias pueden ser tratadas como descuento monetario
+    // ISLR Retention
+    const islrPercent = config.porcentajeISLR || 0;
+    const islrValue = subtotalIngresos * (islrPercent / 100);
 
-    // NETO
-    let neto = ingresosTotales - deduccionesTotales + Number(r.subsidios);
+    const totalDeducciones = sso + rpe + faov + islrValue + Number(r.adelantos) + Number(r.inasistencias);
 
-    // Evitar negativos
-    if (neto < 0) neto = 0;
+    let aPagar = subtotalIngresos - totalDeducciones + Number(r.subsidios);
+    if (aPagar < 0) aPagar = 0;
 
     return {
         sueldoDiario,
         sueldoHora,
         sueldoSemanal,
-        sueldoGanado,
-        cestaticketBase,
+        sueldoReal,
+        bonoNocturno,
+        domingosValor,
+        feriadosValor,
+        subtotalIngresos,
         cestaticket2,
-        ingresosTotales,
+        cestaticket1,
+        ingresoTotalIndexado,
         sso,
         rpe,
         faov,
-        islr,
-        deduccionesTotales,
-        neto
+        islrValue,
+        totalDeducciones,
+        aPagar
     };
 };

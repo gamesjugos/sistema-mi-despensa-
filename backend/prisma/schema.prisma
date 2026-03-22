@@ -46,13 +46,15 @@ model Employee {
 
 model NominaConfig {
   id             String   @id @default("default")
-  tasaDelDia     Float    @default(36.10)
-  valorCesta     Float    @default(1.33)  // Valor diario ejemplo
-  valorCesta2    Float    @default(40.0)  // Bono Cestaticket Adicional Base Moneda Extranjera
+  tasaBCV1       Float    @default(437.36)
+  tasaBCV2       Float    @default(417.36)
+  montoCesta1    Float    @default(40.0)
+  montoCesta2    Float    @default(160.0)
   porcentajeSSO  Float    @default(4.0)
   porcentajeFAOV Float    @default(1.0)
   porcentajeParo Float    @default(0.5)
   porcentajeISLR Float    @default(0.0)
+  aportePensiones Float   @default(160.0)
   updatedAt      DateTime @updatedAt
 }
 

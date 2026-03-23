@@ -273,7 +273,7 @@ export default function Cestatickets() {
                         <form onSubmit={handleSaveRecord} className="p-6 space-y-4">
                             <div>
                                 <label className="block text-sm font-bold uppercase mb-2 text-primary-600">Días Trabajados ({editingEmp.nombre})</label>
-                                <input max="30" min="0" required type="number" value={recordForm.diasTrabajados} onChange={e => setRecordForm({...recordForm, diasTrabajados: Number(e.target.value)})} className="w-full px-4 py-3 border rounded-xl text-lg font-bold dark:bg-black text-center" />
+                                <input max="30" min="0" required type="number" step="1" value={recordForm.diasTrabajados === 0 ? '' : recordForm.diasTrabajados} onChange={e => setRecordForm({...recordForm, diasTrabajados: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-4 py-3 border rounded-xl text-lg font-bold dark:bg-black text-center" />
                                 <p className="text-xs text-slate-500 mt-2 text-center">Este valor ajustará visualmente el monto depositado proporcional a los días transcurridos. (Total mes: 30 días)</p>
                             </div>
                             <button type="submit" className="w-full mt-4 flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded p-3 transition-colors"><Save size={18}/> Guardar Cambios</button>

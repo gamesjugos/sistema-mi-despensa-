@@ -402,27 +402,27 @@ export default function Nomina() {
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                 <div>
                                     <label className="block text-xs uppercase mb-1 opacity-70">Días Trabaj.</label>
-                                    <input max="30" min="0" required type="number" value={recordForm.diasTrabajados} onChange={e => setRecordForm({...recordForm, diasTrabajados: Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
+                                    <input max="30" min="0" step="1" required type="number" value={recordForm.diasTrabajados === 0 ? '' : recordForm.diasTrabajados} onChange={e => setRecordForm({...recordForm, diasTrabajados: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
                                 <div>
                                     <label className="block text-xs uppercase mb-1 opacity-70">Horas Nocturnas</label>
-                                    <input min="0" step="0.5" type="number" value={recordForm.horasNocturnas} onChange={e => setRecordForm({...recordForm, horasNocturnas: Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
+                                    <input min="0" step="1" type="number" value={recordForm.horasNocturnas === 0 ? '' : recordForm.horasNocturnas} onChange={e => setRecordForm({...recordForm, horasNocturnas: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs uppercase mb-1 opacity-70">Domingos Trab. (D)</label>
-                                    <input min="0" step="0.5" type="number" value={recordForm.domingosTrabajados} onChange={e => setRecordForm({...recordForm, domingosTrabajados: Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
+                                    <label className="block text-xs uppercase mb-1 opacity-70">Domingos Trab. (Días)</label>
+                                    <input min="0" step="1" type="number" value={recordForm.domingosTrabajados === 0 ? '' : recordForm.domingosTrabajados} onChange={e => setRecordForm({...recordForm, domingosTrabajados: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs uppercase mb-1 opacity-70">Feriados Trab. (D)</label>
-                                    <input min="0" step="0.5" type="number" value={recordForm.feriadosTrabajados} onChange={e => setRecordForm({...recordForm, feriadosTrabajados: Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
+                                    <label className="block text-xs uppercase mb-1 opacity-70">Feriados Trab. (Días)</label>
+                                    <input min="0" step="1" type="number" value={recordForm.feriadosTrabajados === 0 ? '' : recordForm.feriadosTrabajados} onChange={e => setRecordForm({...recordForm, feriadosTrabajados: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
                                 <div>
                                     <label className="block text-xs uppercase mb-1 opacity-70">Adelantos ($)</label>
-                                    <input min="0" step="0.01" type="number" value={recordForm.adelantos} onChange={e => setRecordForm({...recordForm, adelantos: Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
+                                    <input min="0" step="0.01" type="number" value={recordForm.adelantos === 0 ? '' : recordForm.adelantos} onChange={e => setRecordForm({...recordForm, adelantos: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs uppercase mb-1 opacity-70">Inasist. ($)</label>
-                                    <input min="0" step="0.01" type="number" value={recordForm.inasistencias} onChange={e => setRecordForm({...recordForm, inasistencias: Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
+                                    <label className="block text-xs uppercase mb-1 opacity-70">Inasistencias ($)</label>
+                                    <input min="0" step="0.01" type="number" value={recordForm.inasistencias === 0 ? '' : recordForm.inasistencias} onChange={e => setRecordForm({...recordForm, inasistencias: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
                                 <div className="col-span-2 md:col-span-3 mt-2">
                                     <label className="flex items-center gap-2 cursor-pointer p-3 border rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-900/10 dark:border-purple-900/40 w-full transition-colors">

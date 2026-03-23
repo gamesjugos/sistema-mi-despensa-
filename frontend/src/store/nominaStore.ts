@@ -108,8 +108,20 @@ export const useNominaStore = create<NominaState>((set) => ({
     }
 }));
 
+export const getMondaysInMonth = (year: number, month: number): number => {
+    let d = new Date(year, month - 1, 1);
+    let count = 0;
+    while (d.getMonth() === month - 1) {
+        if (d.getDay() === 1) count++;
+        d.setDate(d.getDate() + 1);
+    }
+    return count;
+};
+
 export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<NominaRecord>, config: NominaConfig) => {
     const r = {
+        mes: new Date().getMonth() + 1,
+        anio: new Date().getFullYear(),
         diasTrabajados: 30,
         horasNocturnas: 0,
         domingosTrabajados: 0,
@@ -140,7 +152,10 @@ export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<N
 
     const ingresoTotalIndexado = subtotalIngresos + cestaticket2 + cestaticket1;
 
-    const factorDeduccion = sueldoSemanal * 4;
+    const semanas_del_mes = getMondaysInMonth(r.anio, r.mes);
+    
+    // factorDeduccion uses actual mondays of the month
+    const factorDeduccion = sueldoSemanal * semanas_del_mes;
     const sso = factorDeduccion * (config.porcentajeSSO / 100);
     const rpe = factorDeduccion * (config.porcentajeParo / 100);
     const faov = factorDeduccion * (config.porcentajeFAOV / 100);
@@ -167,6 +182,7 @@ export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<N
         cestaticket2,
         cestaticket1,
         ingresoTotalIndexado,
+        semanas_del_mes,
         sso,
         rpe,
         faov,

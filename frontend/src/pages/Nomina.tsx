@@ -206,6 +206,11 @@ export default function Nomina() {
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Nómina Base {monthNames[currentMonth-1]} {currentYear}</h1>
                     <p className="text-sm text-slate-500 mt-1">Cálculos de sueldo y deducciones de Ley.</p>
+                    {payrollData.length > 0 && (
+                        <p className="text-sm font-semibold text-primary-600 mt-1">
+                            Semanas del mes: {payrollData[0].calc.semanas_del_mes}
+                        </p>
+                    )}
                 </div>
                 <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
                     <select value={empresaFiltro} onChange={e => setEmpresaFiltro(e.target.value)} className="px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-dark-bg text-sm font-bold rounded-xl text-primary-600 outline-none flex-1 md:flex-none">

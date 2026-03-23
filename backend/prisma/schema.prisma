@@ -75,6 +75,7 @@ model NominaRecord {
   subsidios          Float    @default(0)
   cesta2ManualOverride Float? // if the user inputs a specific override
   aplicaPensiones    Boolean  @default(true) // Whether the 9% pension tax applies to this record
+  aplicaRetenciones  Boolean  @default(true) // Whether SSO, FAOV, PF apply
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 

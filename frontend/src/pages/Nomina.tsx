@@ -424,11 +424,18 @@ export default function Nomina() {
                                     <label className="block text-xs uppercase mb-1 opacity-70">Inasistencias ($)</label>
                                     <input min="0" step="0.01" type="number" value={recordForm.inasistencias === 0 ? '' : recordForm.inasistencias} onChange={e => setRecordForm({...recordForm, inasistencias: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
-                                <div className="col-span-2 md:col-span-3 mt-2">
-                                    <label className="flex items-center gap-2 cursor-pointer p-3 border rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-900/10 dark:border-purple-900/40 w-full transition-colors">
+                                <div className="col-span-2 md:col-span-3 mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <label className="flex items-center gap-2 cursor-pointer p-3 border rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-900/10 dark:border-purple-900/40 transition-colors">
                                         <input type="checkbox" checked={recordForm.aplicaPensiones} onChange={e => setRecordForm({...recordForm, aplicaPensiones: e.target.checked})} className="w-5 h-5 accent-purple-600 rounded" />
                                         <div>
-                                            <p className="font-bold text-sm text-purple-900 dark:text-purple-100">Aplicar Aporte de Pensiones a este empleado</p>
+                                            <p className="font-bold text-sm text-purple-900 dark:text-purple-100">Aplicar Aporte de Pensiones a este empleado (Patronal)</p>
+                                        </div>
+                                    </label>
+                                    
+                                    <label className="flex items-center gap-2 cursor-pointer p-3 border rounded-xl bg-red-50 hover:bg-red-100 dark:bg-red-900/10 dark:border-red-900/40 transition-colors">
+                                        <input type="checkbox" checked={recordForm.aplicaRetenciones !== false} onChange={e => setRecordForm({...recordForm, aplicaRetenciones: e.target.checked})} className="w-5 h-5 accent-red-600 rounded" />
+                                        <div>
+                                            <p className="font-bold text-sm text-red-900 dark:text-red-100">Aplicar Retenciones de Ley (SSO, FAOV, PF) a este empleado</p>
                                         </div>
                                     </label>
                                 </div>

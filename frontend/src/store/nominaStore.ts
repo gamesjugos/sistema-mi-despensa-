@@ -32,6 +32,7 @@ export interface NominaRecord {
     subsidios: number;
     cesta2ManualOverride: number | null;
     aplicaPensiones?: boolean;
+    aplicaRetenciones?: boolean;
 }
 
 interface NominaState {
@@ -133,6 +134,7 @@ export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<N
         inasistencias: 0,
         subsidios: 0,
         aplicaPensiones: true,
+        aplicaRetenciones: true,
         ...record
     };
 
@@ -161,9 +163,9 @@ export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<N
     
     // factorDeduccion uses actual mondays of the month
     const factorDeduccion = sueldoSemanal * semanas_del_mes;
-    const sso = factorDeduccion * (config.porcentajeSSO / 100);
-    const rpe = factorDeduccion * (config.porcentajeParo / 100);
-    const faov = factorDeduccion * (config.porcentajeFAOV / 100);
+    const sso = r.aplicaRetenciones ? factorDeduccion * (config.porcentajeSSO / 100) : 0;
+    const rpe = r.aplicaRetenciones ? factorDeduccion * (config.porcentajeParo / 100) : 0;
+    const faov = r.aplicaRetenciones ? factorDeduccion * (config.porcentajeFAOV / 100) : 0;
     
     const islrPercent = config.porcentajeISLR || 0;
     const islrValue = subtotalIngresos * (islrPercent / 100);

@@ -13,6 +13,7 @@ export interface NominaConfig {
     porcentajeParo: number;
     porcentajeISLR: number;
     aportePensiones: number;
+    recargoNocturno: number;
 }
 
 export interface NominaRecord {
@@ -56,6 +57,7 @@ export const useNominaStore = create<NominaState>((set) => ({
         porcentajeParo: 0.5,
         porcentajeISLR: 0.0,
         aportePensiones: 11.7, 
+        recargoNocturno: 1.2
     },
     records: [],
     loading: false,
@@ -139,9 +141,12 @@ export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<N
     const sueldoHora = sueldoDiario / 8;
     const sueldoSemanal = (sueldoMensual * 12) / 52;
 
-    const bonoNocturno = r.horasNocturnas;
-    const domingosValor = r.domingosTrabajados;
-    const feriadosValor = r.feriadosTrabajados;
+    const valorHoraNormal = sueldoHora;
+    const valorHoraNocturna = valorHoraNormal * (config.recargoNocturno || 1.2);
+    const bonoNocturno = valorHoraNocturna * r.horasNocturnas;
+
+    const domingosValor = sueldoDiario * 1.5 * r.domingosTrabajados;
+    const feriadosValor = sueldoDiario * r.feriadosTrabajados;
 
     const sueldoReal = sueldoDiario * r.diasTrabajados;
 

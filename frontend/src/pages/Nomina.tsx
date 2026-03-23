@@ -327,9 +327,18 @@ export default function Nomina() {
                                 <td className="p-2 bg-slate-50 dark:bg-slate-900/50 text-right">{numFormat(row.calc.sueldoHora)}</td>
                                 <td className="p-2 bg-slate-50 dark:bg-slate-900/50 text-right">{numFormat(row.calc.sueldoSemanal)}</td>
                                 <td className="p-2 text-center text-blue-600 dark:text-blue-400 font-bold">{row.record.diasTrabajados}</td>
-                                <td className="p-2 text-right">{numFormat(row.calc.bonoNocturno)}</td>
-                                <td className="p-2 text-right">{numFormat(row.calc.domingosValor)}</td>
-                                <td className="p-2 text-right">{numFormat(row.calc.feriadosValor)}</td>
+                                <td className="p-2 text-right">
+                                    {row.record.horasNocturnas > 0 && <span className="text-[10px] text-slate-400 mr-1">{row.record.horasNocturnas}h</span>}
+                                    {numFormat(row.calc.bonoNocturno)}
+                                </td>
+                                <td className="p-2 text-right">
+                                    {row.record.domingosTrabajados > 0 && <span className="text-[10px] text-slate-400 mr-1">{row.record.domingosTrabajados}d</span>}
+                                    {numFormat(row.calc.domingosValor)}
+                                </td>
+                                <td className="p-2 text-right">
+                                    {row.record.feriadosTrabajados > 0 && <span className="text-[10px] text-slate-400 mr-1">{row.record.feriadosTrabajados}d</span>}
+                                    {numFormat(row.calc.feriadosValor)}
+                                </td>
                                 <td className="p-2 border-l-2 border-l-slate-300 bg-slate-50 dark:bg-slate-900/50 text-right">{numFormat(row.calc.sueldoReal)}</td>
                                 <td className="p-2 font-bold text-slate-800 dark:text-white bg-slate-200 dark:bg-slate-700 border-r-2 border-r-slate-300 text-right">{numFormat(row.calc.subtotalIngresos)}</td>
                                 <td className="p-2 bg-red-50 dark:bg-red-900/10 text-red-600 text-right">{numFormat(row.calc.sso)}</td>
@@ -396,16 +405,16 @@ export default function Nomina() {
                                     <input max="30" min="0" required type="number" value={recordForm.diasTrabajados} onChange={e => setRecordForm({...recordForm, diasTrabajados: Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs uppercase mb-1 opacity-70">Bono Nocturno ($)</label>
-                                    <input min="0" step="0.01" type="number" value={recordForm.horasNocturnas} onChange={e => setRecordForm({...recordForm, horasNocturnas: Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
+                                    <label className="block text-xs uppercase mb-1 opacity-70">Horas Nocturnas</label>
+                                    <input min="0" step="0.5" type="number" value={recordForm.horasNocturnas} onChange={e => setRecordForm({...recordForm, horasNocturnas: Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs uppercase mb-1 opacity-70">Domingo Tr. ($)</label>
-                                    <input min="0" step="0.01" type="number" value={recordForm.domingosTrabajados} onChange={e => setRecordForm({...recordForm, domingosTrabajados: Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
+                                    <label className="block text-xs uppercase mb-1 opacity-70">Domingos Trab. (D)</label>
+                                    <input min="0" step="0.5" type="number" value={recordForm.domingosTrabajados} onChange={e => setRecordForm({...recordForm, domingosTrabajados: Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs uppercase mb-1 opacity-70">Feriado Tr. ($)</label>
-                                    <input min="0" step="0.01" type="number" value={recordForm.feriadosTrabajados} onChange={e => setRecordForm({...recordForm, feriadosTrabajados: Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
+                                    <label className="block text-xs uppercase mb-1 opacity-70">Feriados Trab. (D)</label>
+                                    <input min="0" step="0.5" type="number" value={recordForm.feriadosTrabajados} onChange={e => setRecordForm({...recordForm, feriadosTrabajados: Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
                                 <div>
                                     <label className="block text-xs uppercase mb-1 opacity-70">Adelantos ($)</label>
@@ -442,6 +451,12 @@ export default function Nomina() {
                             <div className="bg-purple-50 dark:bg-purple-900/10 p-4 rounded-xl border border-purple-200 dark:border-purple-900/50">
                                 <label className="block text-sm font-bold text-purple-800 dark:text-purple-300 mb-2">Monto de Aporte a Pensiones Patronal ($)</label>
                                 <input min="0" step="0.01" type="number" value={configForm.aportePensiones} onChange={e => setConfigForm({...configForm, aportePensiones: Number(e.target.value)})} className="w-full border rounded px-3 py-2 font-bold dark:bg-black" />
+                            </div>
+
+                            <div className="bg-slate-50 dark:bg-slate-900/10 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+                                <label className="block text-sm font-bold text-slate-800 dark:text-slate-300 mb-2">Multiplicador de Hora Nocturna</label>
+                                <input min="1" step="0.01" type="number" value={configForm.recargoNocturno || 1.2} onChange={e => setConfigForm({...configForm, recargoNocturno: Number(e.target.value)})} className="w-full border rounded px-3 py-2 font-bold dark:bg-black" />
+                                <p className="text-xs text-slate-500 mt-1">Ej. 1.2 significa un 20% de recargo sobre la hora normal.</p>
                             </div>
 
                             <hr className="my-2 border-slate-200 dark:border-slate-800" />

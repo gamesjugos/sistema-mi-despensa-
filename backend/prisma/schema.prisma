@@ -55,6 +55,7 @@ model NominaConfig {
   porcentajeParo Float    @default(0.5)
   porcentajeISLR Float    @default(0.0)
   aportePensiones Float   @default(160.0)
+  recargoNocturno Float   @default(1.2)
   updatedAt      DateTime @updatedAt
 }
 

@@ -23,6 +23,7 @@ export interface NominaRecord {
     mes: number;
     anio: number;
     diasTrabajados: number;
+    diasVacaciones: number;
     horasNocturnas: number;
     domingosTrabajados: number;
     feriadosTrabajados: number;
@@ -126,6 +127,7 @@ export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<N
         mes: new Date().getMonth() + 1,
         anio: new Date().getFullYear(),
         diasTrabajados: 30,
+        diasVacaciones: 0,
         horasNocturnas: 0,
         domingosTrabajados: 0,
         feriadosTrabajados: 0,
@@ -154,8 +156,9 @@ export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<N
 
     const subtotalIngresos = sueldoReal + bonoNocturno + domingosValor + feriadosValor;
 
-    const cestaticket2 = (config.montoCesta2 * config.tasaBCV1 / 30) * r.diasTrabajados;
-    const cestaticket1 = (config.montoCesta1 * config.tasaBCV1 / 30) * r.diasTrabajados;
+    const diasCesta = r.diasTrabajados + r.diasVacaciones;
+    const cestaticket2 = (config.montoCesta2 * config.tasaBCV1 / 30) * diasCesta;
+    const cestaticket1 = (config.montoCesta1 * config.tasaBCV1 / 30) * diasCesta;
 
     const ingresoTotalIndexado = subtotalIngresos + cestaticket2 + cestaticket1;
 

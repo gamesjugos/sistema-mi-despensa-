@@ -66,6 +66,7 @@ model NominaRecord {
   mes                Int
   anio               Int
   diasTrabajados     Float    @default(30)
+  diasVacaciones     Float    @default(0)
   horasNocturnas     Float    @default(0)
   domingosTrabajados Float    @default(0)
   feriadosTrabajados Float    @default(0)

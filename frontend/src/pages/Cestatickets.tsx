@@ -44,6 +44,7 @@ export default function Cestatickets() {
                 mes: currentMonth,
                 anio: currentYear,
                 diasTrabajados: 30,
+                diasVacaciones: 0,
                 horasNocturnas: 0,
                 domingosTrabajados: 0,
                 feriadosTrabajados: 0,
@@ -69,6 +70,7 @@ export default function Cestatickets() {
             mes: currentMonth,
             anio: currentYear,
             diasTrabajados: 30,
+            diasVacaciones: 0,
             horasNocturnas: 0,
             domingosTrabajados: 0,
             feriadosTrabajados: 0,
@@ -224,7 +226,7 @@ export default function Cestatickets() {
                             <th className="p-3 border-r whitespace-nowrap sticky left-0 z-30 bg-slate-200 dark:bg-slate-800">Nombre</th>
                             <th className="p-3">Cédula</th>
                             <th className="p-3">Cargo</th>
-                            <th className="p-3 border-r border-l-2 border-l-slate-400 bg-slate-100 dark:bg-slate-900 text-center">Días<br/>Trabajados</th>
+                            <th className="p-3 border-r border-l-2 border-l-slate-400 bg-slate-100 dark:bg-slate-900 text-center">Días<br/>(Trab + Vac)</th>
                             <th className="p-3 text-slate-900 font-bold bg-yellow-200 dark:bg-yellow-800/50 text-right">Cestaticket 1<br/><span className="font-normal text-[10px]">(Base ${config.montoCesta1} x {config.tasaBCV1} / 30 x Dias)</span></th>
                             <th className="p-3 text-slate-900 font-bold bg-blue-100 dark:bg-blue-900/50 text-right">Cestaticket 2<br/><span className="font-normal text-[10px]">(Base ${config.montoCesta2} x {config.tasaBCV1} / 30 x Dias)</span></th>
                             <th className="p-3 bg-purple-200 dark:bg-purple-900/80 text-purple-900 dark:text-purple-100 font-bold border-l-2 border-l-purple-400 text-right">TOTAL CESTATICKETS<br/>(Bs.)</th>
@@ -237,7 +239,7 @@ export default function Cestatickets() {
                                 <td className="p-3 sticky left-0 z-10 bg-white dark:bg-dark-bg font-semibold">{row.emp.nombre} {row.emp.apellido}</td>
                                 <td className="p-3">{row.emp.cedula}</td>
                                 <td className="p-3 truncate max-w-[120px]">{row.emp.cargo}</td>
-                                <td className="p-3 border-l-2 border-l-slate-300 bg-slate-50 dark:bg-slate-900/50 text-center font-bold text-blue-600 space-x-1">{row.record.diasTrabajados}</td>
+                                <td className="p-3 border-l-2 border-l-slate-300 bg-slate-50 dark:bg-slate-900/50 text-center font-bold text-blue-600">{row.record.diasTrabajados}{row.record.diasVacaciones > 0 ? ` + ${row.record.diasVacaciones}V` : ''}</td>
                                 <td className="p-3 font-bold text-yellow-800 dark:text-yellow-300 bg-yellow-100 dark:bg-yellow-900/30 text-right">{numFormat(row.calc.cestaticket1)}</td>
                                 <td className="p-3 font-bold text-blue-800 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 text-right">{numFormat(row.calc.cestaticket2)}</td>
                                 <td className="p-3 bg-purple-50 dark:bg-purple-900/20 font-bold border-l-2 border-l-purple-300 text-right text-base text-purple-700 dark:text-purple-400">{numFormat(row.calc.cestaticket1 + row.calc.cestaticket2)}</td>
@@ -271,11 +273,17 @@ export default function Cestatickets() {
                             <button onClick={() => setEditingEmp(null)}><X className="text-slate-400" /></button>
                         </div>
                         <form onSubmit={handleSaveRecord} className="p-6 space-y-4">
-                            <div>
-                                <label className="block text-sm font-bold uppercase mb-2 text-primary-600">Días Trabajados ({editingEmp.nombre})</label>
-                                <input max="30" min="0" required type="number" step="1" value={recordForm.diasTrabajados === 0 ? '' : recordForm.diasTrabajados} onChange={e => setRecordForm({...recordForm, diasTrabajados: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-4 py-3 border rounded-xl text-lg font-bold dark:bg-black text-center" />
-                                <p className="text-xs text-slate-500 mt-2 text-center">Este valor ajustará visualmente el monto depositado proporcional a los días transcurridos. (Total mes: 30 días)</p>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-bold uppercase mb-2 text-primary-600">Días Trabajados ({editingEmp.nombre})</label>
+                                    <input max="30" min="0" required type="number" step="1" value={recordForm.diasTrabajados === 0 ? '' : recordForm.diasTrabajados} onChange={e => setRecordForm({...recordForm, diasTrabajados: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-4 py-3 border rounded-xl text-lg font-bold dark:bg-black text-center" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold uppercase mb-2 text-primary-600">Días Vacaciones</label>
+                                    <input max="30" min="0" type="number" step="1" value={recordForm.diasVacaciones === 0 ? '' : recordForm.diasVacaciones} onChange={e => setRecordForm({...recordForm, diasVacaciones: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-4 py-3 border rounded-xl text-lg font-bold dark:bg-black text-center text-blue-600" />
+                                </div>
                             </div>
+                            <p className="text-xs text-slate-500 mt-2 text-center">Este valor ajustará visualmente el monto depositado proporcional a los días transcurridos. (Bono Cestaticket = Días Trabajados + Días Vacaciones)</p>
                             <button type="submit" className="w-full mt-4 flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded p-3 transition-colors"><Save size={18}/> Guardar Cambios</button>
                         </form>
                     </div>

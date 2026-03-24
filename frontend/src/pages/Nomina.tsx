@@ -45,6 +45,7 @@ export default function Nomina() {
                 mes: currentMonth,
                 anio: currentYear,
                 diasTrabajados: 30,
+                diasVacaciones: 0,
                 horasNocturnas: 0,
                 domingosTrabajados: 0,
                 feriadosTrabajados: 0,
@@ -399,10 +400,14 @@ export default function Nomina() {
                                 <p className="text-xs text-slate-500 mt-1">Este es el sueldo global del empleado, afectará la Jornada Diaria y Semanal.</p>
                             </div>
                             
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <div>
                                     <label className="block text-xs uppercase mb-1 opacity-70">Días Trabaj.</label>
                                     <input max="30" min="0" step="1" required type="number" value={recordForm.diasTrabajados === 0 ? '' : recordForm.diasTrabajados} onChange={e => setRecordForm({...recordForm, diasTrabajados: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs uppercase mb-1 opacity-70">Días Vacac.</label>
+                                    <input max="30" min="0" step="1" type="number" value={recordForm.diasVacaciones === 0 ? '' : recordForm.diasVacaciones} onChange={e => setRecordForm({...recordForm, diasVacaciones: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
                                 <div>
                                     <label className="block text-xs uppercase mb-1 opacity-70">Horas Nocturnas</label>

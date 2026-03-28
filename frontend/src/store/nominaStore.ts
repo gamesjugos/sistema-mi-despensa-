@@ -145,9 +145,11 @@ export const calculatePayroll = (emp: Employee, record: NominaRecord | Partial<N
     const sueldoHora = sueldoDiario / 8;
     const sueldoSemanal = (sueldoMensual * 12) / 52;
 
-    const valorHoraNormal = sueldoHora;
-    const valorHoraNocturna = valorHoraNormal * (config.recargoNocturno || 1.2);
-    const bonoNocturno = valorHoraNocturna * r.horasNocturnas;
+    const valorHoraNormal = sueldoDiario / 8;
+    const multiplicadorNocturno = config.recargoNocturno ? Number(config.recargoNocturno) : 1.3;
+    const valorHoraNocturna = valorHoraNormal * multiplicadorNocturno;
+    const pago_nocturno = valorHoraNocturna * r.horasNocturnas;
+    const bonoNocturno = pago_nocturno;
 
     const domingosValor = sueldoDiario * 1.5 * r.domingosTrabajados;
     const feriadosValor = sueldoDiario * r.feriadosTrabajados;

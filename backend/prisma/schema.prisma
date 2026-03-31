@@ -56,6 +56,10 @@ model NominaConfig {
   porcentajeISLR Float    @default(0.0)
   aportePensiones Float   @default(160.0)
   recargoNocturno Float   @default(1.2)
+  rifDespensa     String  @default("J-00000000-0")
+  rifContenedor   String  @default("J-00000000-1")
+  nombreDespensa  String  @default("MI DESPENSA EL PARAISO, C.A")
+  nombreContenedor String @default("MI CONTENEDOR, C.A")
   updatedAt      DateTime @updatedAt
 }
 

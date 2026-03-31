@@ -14,6 +14,10 @@ export interface NominaConfig {
     porcentajeISLR: number;
     aportePensiones: number;
     recargoNocturno: number;
+    rifDespensa: string;
+    rifContenedor: string;
+    nombreDespensa: string;
+    nombreContenedor: string;
 }
 
 export interface NominaRecord {
@@ -59,7 +63,11 @@ export const useNominaStore = create<NominaState>((set) => ({
         porcentajeParo: 0.5,
         porcentajeISLR: 0.0,
         aportePensiones: 11.7, 
-        recargoNocturno: 1.2
+        recargoNocturno: 1.2,
+        rifDespensa: "J-00000000-0",
+        rifContenedor: "J-00000000-1",
+        nombreDespensa: "MI DESPENSA EL PARAISO, C.A",
+        nombreContenedor: "MI CONTENEDOR, C.A"
     },
     records: [],
     loading: false,

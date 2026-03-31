@@ -502,6 +502,28 @@ export default function Nomina() {
                                     <input min="0" step="0.1" type="number" value={configForm.porcentajeISLR} onChange={e => setConfigForm({...configForm, porcentajeISLR: Number(e.target.value)})} className="w-full border rounded px-3 py-2 dark:bg-black" />
                                 </div>
                             </div>
+                            <hr className="my-2 border-slate-200 dark:border-slate-800" />
+                            
+                            <div className="space-y-4">
+                                <h3 className="font-bold text-slate-800 dark:text-slate-300">Datos de Empresa en Recibos</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="bg-slate-50 dark:bg-slate-900/10 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+                                        <h4 className="font-bold text-xs uppercase mb-3 text-slate-500">Mi Despensa</h4>
+                                        <label className="block text-xs mb-1 font-semibold">Nombre Legal</label>
+                                        <input type="text" value={configForm.nombreDespensa || ''} onChange={e => setConfigForm({...configForm, nombreDespensa: e.target.value})} className="w-full border rounded px-3 py-2 text-sm dark:bg-black mb-2" />
+                                        <label className="block text-xs mb-1 font-semibold">RIF</label>
+                                        <input type="text" value={configForm.rifDespensa || ''} onChange={e => setConfigForm({...configForm, rifDespensa: e.target.value})} className="w-full border rounded px-3 py-2 text-sm dark:bg-black" />
+                                    </div>
+                                    <div className="bg-slate-50 dark:bg-slate-900/10 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+                                        <h4 className="font-bold text-xs uppercase mb-3 text-slate-500">Mi Contenedor</h4>
+                                        <label className="block text-xs mb-1 font-semibold">Nombre Legal</label>
+                                        <input type="text" value={configForm.nombreContenedor || ''} onChange={e => setConfigForm({...configForm, nombreContenedor: e.target.value})} className="w-full border rounded px-3 py-2 text-sm dark:bg-black mb-2" />
+                                        <label className="block text-xs mb-1 font-semibold">RIF</label>
+                                        <input type="text" value={configForm.rifContenedor || ''} onChange={e => setConfigForm({...configForm, rifContenedor: e.target.value})} className="w-full border rounded px-3 py-2 text-sm dark:bg-black" />
+                                    </div>
+                                </div>
+                            </div>
+
                             <button onClick={handleSaveConfig} className="bg-primary-600 text-white font-bold w-full mt-4 flex items-center justify-center gap-2 p-3 rounded-xl transition hover:bg-primary-700"><Save size={18}/> Guardar Parámetros</button>
                         </div>
                     </div>

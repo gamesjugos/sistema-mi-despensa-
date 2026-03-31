@@ -23,8 +23,12 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
 
     const numFormat = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const isDespensa = emp.empresa === 'MI_DESPENSA';
-    const companyName = isDespensa ? 'INVERSIONES MI DESPENSA, C.A.' : 'MI CONTENEDOR, C.A.';
-    const companyRif = isDespensa ? 'J-50000000-0' : 'J-50000000-1'; // Mock RIFs
+    const companyName = isDespensa ? (config.nombreDespensa || 'MI DESPENSA EL PARAISO, C.A') : (config.nombreContenedor || 'MI CONTENEDOR, C.A');
+    const companyRif = isDespensa ? (config.rifDespensa || 'J-00000000-0') : (config.rifContenedor || 'J-00000000-1');
+
+    const monthStr = record.mes.toString().padStart(2, '0');
+    const lastDay = new Date(record.anio, record.mes, 0).getDate();
+    const period = `01/${monthStr}/${record.anio} al ${lastDay}/${monthStr}/${record.anio}`;
 
     const renderNominaReceipt = () => (
         <div className="border border-black p-6 mb-8 text-black bg-white break-inside-avoid">
@@ -33,12 +37,16 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                     <h2 className="font-bold text-xl uppercase">{companyName}</h2>
                     <p className="text-sm">RIF: {companyRif}</p>
                 </div>
-                <div className="text-right">
-                    <p className="text-sm border border-black p-2 font-bold uppercase">Mes: {monthName} {year}</p>
+                <div className="text-right flex flex-col items-end">
+                    <p className="text-sm border border-black px-3 py-1 font-bold uppercase mb-1 w-fit bg-slate-100">Mes: {monthName} {year}</p>
+                    <p className="text-xs border border-black px-2 py-1 uppercase w-fit">Período: {period}</p>
                 </div>
             </div>
 
-            <h1 className="text-center font-bold text-lg mb-6 underline uppercase">Recibo de Pago de Sueldo</h1>
+            <div className="text-center mb-6">
+                <h1 className="font-bold text-lg underline uppercase mb-1">Recibo de Pago de Sueldo</h1>
+                <p className="text-sm font-semibold text-slate-700">Sueldo Base Mensual Asignado: <span className="text-slate-900">${numFormat(emp.sueldoMensual || 0)}</span></p>
+            </div>
 
             <div className="border border-black mb-6">
                 <div className="grid grid-cols-2 border-b border-black text-sm">
@@ -180,14 +188,16 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                     <h2 className="font-bold text-xl uppercase">{companyName}</h2>
                     <p className="text-sm">RIF: {companyRif}</p>
                 </div>
-                <div className="text-right">
-                    <p className="text-sm border border-black p-2 font-bold uppercase">Mes: {monthName} {year}</p>
+                <div className="text-right flex flex-col items-end">
+                    <p className="text-sm border border-black px-3 py-1 font-bold uppercase mb-1 w-fit bg-slate-100">Mes: {monthName} {year}</p>
+                    <p className="text-xs border border-black px-2 py-1 uppercase w-fit">Período: {period}</p>
                 </div>
             </div>
 
             <div className="text-center mb-6">
                 <h1 className="font-bold text-lg underline uppercase mb-1">Recibo de Cestaticket</h1>
-                <p className="text-sm font-semibold">Tasa BCV Aplicada: <span className="text-blue-700">Bs. {config.tasaBCV1}</span></p>
+                <p className="text-sm font-semibold text-slate-700 mb-1">Tasa BCV Aplicada: <span className="text-slate-900">Bs. {config.tasaBCV1}</span></p>
+                <p className="text-sm font-semibold text-slate-700">Sueldo Base Mensual Asignado: <span className="text-slate-900">${numFormat(emp.sueldoMensual || 0)}</span></p>
             </div>
 
             <div className="border border-black mb-6">

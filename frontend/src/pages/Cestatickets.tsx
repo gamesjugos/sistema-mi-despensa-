@@ -1,14 +1,15 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useEmployeeStore, Employee } from '../store/employeeStore';
 import { useNominaStore, NominaRecord, calculatePayroll } from '../store/nominaStore';
-import { Settings, Download, Edit3, X, Save } from 'lucide-react';
+import { Settings, Download, Edit3, X, Save, Printer } from 'lucide-react';
 import * as ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
+import ReceiptModal from '../components/ReceiptModal';
 
 const monthNames = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
 export default function Cestatickets() {
-    const { employees, fetchEmployees, updateEmployee } = useEmployeeStore();
+    const { employees, fetchEmployees } = useEmployeeStore();
     const { config, records, fetchConfig, updateConfig, fetchRecords, saveRecord } = useNominaStore();
 
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
@@ -18,6 +19,7 @@ export default function Cestatickets() {
     const [configForm, setConfigForm] = useState(config);
 
     const [editingEmp, setEditingEmp] = useState<Employee | null>(null);
+    const [printingEmp, setPrintingEmp] = useState<any>(null);
     const [recordForm, setRecordForm] = useState<Partial<NominaRecord>>({});
 
     useEffect(() => {
@@ -204,9 +206,14 @@ export default function Cestatickets() {
                                 <p className="font-semibold text-blue-600">{numFormat(row.calc.cestaticket2)}</p>
                             </div>
                         </div>
-                        <button onClick={() => handleOpenEdit(row.emp)} className="mt-4 w-full flex items-center justify-center gap-2 py-2 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition text-sm font-semibold">
-                            <Edit3 size={16} /> Modificar Días Trabajados
-                        </button>
+                        <div className="flex gap-2 w-full mt-4">
+                            <button onClick={() => setPrintingEmp(row)} className="flex-1 flex items-center justify-center gap-2 py-2 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition text-sm font-semibold text-blue-600 dark:text-blue-400">
+                                <Printer size={16} /> Imprimir
+                            </button>
+                            <button onClick={() => handleOpenEdit(row.emp)} className="flex-1 flex items-center justify-center gap-2 py-2 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition text-sm font-semibold">
+                                <Edit3 size={16} /> Editar Días
+                            </button>
+                        </div>
                     </div>
                 ))}
                 
@@ -244,9 +251,14 @@ export default function Cestatickets() {
                                 <td className="p-3 font-bold text-blue-800 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 text-right">{numFormat(row.calc.cestaticket2)}</td>
                                 <td className="p-3 bg-purple-50 dark:bg-purple-900/20 font-bold border-l-2 border-l-purple-300 text-right text-base text-purple-700 dark:text-purple-400">{numFormat(row.calc.cestaticket1 + row.calc.cestaticket2)}</td>
                                 <td className="p-2 sticky right-0 z-10 bg-white dark:bg-dark-bg text-center">
-                                    <button onClick={() => handleOpenEdit(row.emp)} className="p-2 text-primary-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded">
-                                        <Edit3 size={16} />
-                                    </button>
+                                    <div className="flex justify-center flex-nowrap shrink-0">
+                                        <button onClick={() => setPrintingEmp(row)} className="p-2 text-blue-600 dark:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded mr-1">
+                                            <Printer size={16} />
+                                        </button>
+                                        <button onClick={() => handleOpenEdit(row.emp)} className="p-2 text-primary-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded">
+                                            <Edit3 size={16} />
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -317,6 +329,18 @@ export default function Cestatickets() {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {printingEmp && (
+                <ReceiptModal
+                    emp={printingEmp.emp}
+                    record={printingEmp.record}
+                    calc={printingEmp.calc}
+                    onClose={() => setPrintingEmp(null)}
+                    monthName={monthNames[currentMonth - 1]}
+                    year={currentYear}
+                    initialType="CESTATICKET"
+                />
             )}
         </div>
     );

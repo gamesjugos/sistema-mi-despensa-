@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Employee } from '../store/employeeStore';
-import { NominaRecord } from '../store/nominaStore';
+import { NominaRecord, useNominaStore } from '../store/nominaStore';
 import { X, Printer } from 'lucide-react';
 
 interface ReceiptModalProps {
@@ -15,6 +15,7 @@ interface ReceiptModalProps {
 
 export default function ReceiptModal({ emp, record, calc, onClose, initialType = 'AMBOS', monthName, year }: ReceiptModalProps) {
     const [type, setType] = useState(initialType);
+    const { config } = useNominaStore();
 
     const handlePrint = () => {
         window.print();
@@ -184,7 +185,10 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                 </div>
             </div>
 
-            <h1 className="text-center font-bold text-lg mb-6 underline uppercase">Recibo de Cestaticket</h1>
+            <div className="text-center mb-6">
+                <h1 className="font-bold text-lg underline uppercase mb-1">Recibo de Cestaticket</h1>
+                <p className="text-sm font-semibold">Tasa BCV Aplicada: <span className="text-blue-700">Bs. {config.tasaBCV1}</span></p>
+            </div>
 
             <div className="border border-black mb-6">
                 <div className="grid grid-cols-2 border-b border-black text-sm">

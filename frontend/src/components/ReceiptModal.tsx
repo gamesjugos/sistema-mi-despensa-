@@ -30,7 +30,12 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
     const lastDay = new Date(record.anio, record.mes, 0).getDate();
     const period = `01/${monthStr}/${record.anio} al ${lastDay}/${monthStr}/${record.anio}`;
 
-    const renderNominaReceipt = () => (
+    const renderNominaReceipt = () => {
+        const shownIngresos = calc.subtotalIngresos + record.subsidios - record.bonosAdicionales - record.inasistencias;
+        const shownDeducciones = calc.totalDeducciones - record.inasistencias - record.adelantos;
+        const shownNeto = shownIngresos - shownDeducciones;
+
+        return (
         <div className="border border-black p-6 mb-8 text-black bg-white break-inside-avoid">
             <div className="flex justify-between items-start mb-6">
                 <div>
@@ -85,8 +90,8 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                             <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.feriadosValor)}</span></div></td>
                         </tr>
                         <tr>
-                            <td className="border-b border-r border-black p-2">Bonos Adicionales</td>
-                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(record.bonosAdicionales)}</span></div></td>
+                            <td className="border-b border-r border-black p-2">Inasistencias</td>
+                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>-{numFormat(record.inasistencias)}</span></div></td>
                         </tr>
                         <tr>
                             <td className="border-b border-r border-black p-2">Subsidios / Otros</td>
@@ -96,7 +101,7 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                     <tfoot>
                         <tr>
                             <th className="border-t border-r border-black p-2 text-right">Total Ingresos:</th>
-                            <th className="border-t border-black p-2 bg-gray-100"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.subtotalIngresos + record.subsidios)}</span></div></th>
+                            <th className="border-t border-black p-2 bg-gray-100"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(shownIngresos)}</span></div></th>
                         </tr>
                     </tfoot>
                 </table>
@@ -125,19 +130,11 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                             <td className="border-b border-r border-black p-2">I.S.L.R</td>
                             <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.islrValue)}</span></div></td>
                         </tr>
-                        <tr>
-                            <td className="border-b border-r border-black p-2">Adelantos de Quincena</td>
-                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(record.adelantos)}</span></div></td>
-                        </tr>
-                        <tr>
-                            <td className="border-b border-r border-black p-2">Inasistencias</td>
-                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(record.inasistencias)}</span></div></td>
-                        </tr>
                     </tbody>
                     <tfoot>
                         <tr>
                             <th className="border-t border-r border-black p-2 text-right">Total Deducciones:</th>
-                            <th className="border-t border-black p-2 text-right bg-gray-100">{numFormat(calc.totalDeducciones)}</th>
+                            <th className="border-t border-black p-2 text-right bg-gray-100"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(shownDeducciones)}</span></div></th>
                         </tr>
                     </tfoot>
                 </table>
@@ -148,7 +145,7 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                     <tbody>
                         <tr>
                             <th className="border-r border-black p-3 bg-gray-200 uppercase text-right w-2/3 tracking-wider">Neto A Pagar:</th>
-                            <th className="p-3 bg-gray-100 text-lg"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.aPagar)}</span></div></th>
+                            <th className="p-3 bg-gray-100 text-lg"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(shownNeto)}</span></div></th>
                         </tr>
                     </tbody>
                 </table>
@@ -164,6 +161,7 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
             </div>
         </div>
     );
+    };
 
     const renderCestaticketReceipt = () => (
         <div className="border border-black p-6 mb-8 text-black bg-white break-inside-avoid">

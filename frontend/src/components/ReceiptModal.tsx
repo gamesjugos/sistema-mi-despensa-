@@ -260,8 +260,8 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
             </div>
 
             {/* Print wrapper */}
-            <div className="p-8 mx-auto w-full max-w-4xl pt-8">
-                <div id="printable-receipt" className="bg-white shadow flex flex-col print:shadow-none p-10 print:p-0">
+            <div className="p-4 md:p-8 w-full max-w-4xl mx-auto pt-8 overflow-x-auto">
+                <div id="printable-receipt" className="bg-white shadow flex flex-col print:shadow-none p-8 md:p-10 print:p-0 min-w-[800px] mx-auto">
                     {(type === 'NOMINA' || type === 'AMBOS') && renderNominaReceipt()}
                     {(type === 'CESTATICKET' || type === 'AMBOS') && renderCestaticketReceipt()}
                 </div>

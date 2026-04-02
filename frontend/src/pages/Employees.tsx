@@ -281,7 +281,7 @@ const Employees = () => {
                                     <input required type="text" value={formData.cedula} onChange={e => setFormData({...formData, cedula: e.target.value})} className="w-full px-4 py-2 border rounded-xl dark:bg-dark-bg dark:border-dark-border dark:text-white" />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-1">Sueldo Mensual ($)</label>
+                                    <label className="block text-sm font-medium mb-1">Sueldo Mensual (Bs.)</label>
                                     <input required type="number" step="0.01" value={formData.sueldoMensual} onChange={e => setFormData({...formData, sueldoMensual: Number(e.target.value)})} className="w-full px-4 py-2 border rounded-xl dark:bg-dark-bg dark:border-dark-border dark:text-white" />
                                 </div>
                             </div>

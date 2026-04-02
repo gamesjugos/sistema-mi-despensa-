@@ -45,7 +45,7 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
 
             <div className="text-center mb-6">
                 <h1 className="font-bold text-lg underline uppercase mb-1">Recibo de Pago de Sueldo</h1>
-                <p className="text-sm font-semibold text-slate-700">Sueldo Base Mensual Asignado: <span className="text-slate-900">${numFormat(emp.sueldoMensual || 0)}</span></p>
+                <p className="text-sm font-semibold text-slate-700">Sueldo Base Mensual Asignado: <span className="text-slate-900">Bs. {numFormat(emp.sueldoMensual || 0)}</span></p>
             </div>
 
             <div className="border border-black mb-6">
@@ -64,49 +64,39 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                     <thead>
                         <tr>
                             <th className="border-b border-r border-black p-2 bg-gray-100 text-left">Asignaciones</th>
-                            <th className="border-b border-black p-2 bg-gray-100 text-right">Monto ($)</th>
+                            <th className="border-b border-black p-2 bg-gray-100 text-right">Monto (Bs.)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td className="border-b border-r border-black p-2">Sueldo Base (Días Trab: {record.diasTrabajados})</td>
-                            <td className="border-b border-black p-2 text-right">{numFormat(calc.sueldoReal)}</td>
+                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.sueldoReal)}</td>
                         </tr>
-                        {calc.bonoNocturno > 0 && (
-                            <tr>
-                                <td className="border-b border-r border-black p-2">Horas Nocturnas ({record.horasNocturnas}H)</td>
-                                <td className="border-b border-black p-2 text-right">{numFormat(calc.bonoNocturno)}</td>
-                            </tr>
-                        )}
-                        {calc.domingosValor > 0 && (
-                            <tr>
-                                <td className="border-b border-r border-black p-2">Domingos Trabajados ({record.domingosTrabajados}D)</td>
-                                <td className="border-b border-black p-2 text-right">{numFormat(calc.domingosValor)}</td>
-                            </tr>
-                        )}
-                        {calc.feriadosValor > 0 && (
-                            <tr>
-                                <td className="border-b border-r border-black p-2">Feriados Trabajados ({record.feriadosTrabajados}D)</td>
-                                <td className="border-b border-black p-2 text-right">{numFormat(calc.feriadosValor)}</td>
-                            </tr>
-                        )}
-                        {record.bonosAdicionales > 0 && (
-                            <tr>
-                                <td className="border-b border-r border-black p-2">Bonos Adicionales</td>
-                                <td className="border-b border-black p-2 text-right">{numFormat(record.bonosAdicionales)}</td>
-                            </tr>
-                        )}
-                        {record.subsidios > 0 && (
-                            <tr>
-                                <td className="border-b border-r border-black p-2">Subsidios / Otros</td>
-                                <td className="border-b border-black p-2 text-right">{numFormat(record.subsidios)}</td>
-                            </tr>
-                        )}
+                        <tr>
+                            <td className="border-b border-r border-black p-2">Horas Nocturnas ({record.horasNocturnas}H)</td>
+                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.bonoNocturno)}</td>
+                        </tr>
+                        <tr>
+                            <td className="border-b border-r border-black p-2">Domingos Trabajados ({record.domingosTrabajados}D)</td>
+                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.domingosValor)}</td>
+                        </tr>
+                        <tr>
+                            <td className="border-b border-r border-black p-2">Feriados Trabajados ({record.feriadosTrabajados}D)</td>
+                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.feriadosValor)}</td>
+                        </tr>
+                        <tr>
+                            <td className="border-b border-r border-black p-2">Bonos Adicionales</td>
+                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(record.bonosAdicionales)}</td>
+                        </tr>
+                        <tr>
+                            <td className="border-b border-r border-black p-2">Subsidios / Otros</td>
+                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(record.subsidios)}</td>
+                        </tr>
                     </tbody>
                     <tfoot>
                         <tr>
                             <th className="border-t border-r border-black p-2 text-right">Total Ingresos:</th>
-                            <th className="border-t border-black p-2 text-right bg-gray-100">{numFormat(calc.subtotalIngresos + record.subsidios)}</th>
+                            <th className="border-t border-black p-2 text-right bg-gray-100">Bs. {numFormat(calc.subtotalIngresos + record.subsidios)}</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -115,40 +105,34 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                     <thead>
                         <tr>
                             <th className="border-b border-r border-black p-2 bg-gray-100 text-left">Deducciones</th>
-                            <th className="border-b border-black p-2 bg-gray-100 text-right">Monto ($)</th>
+                            <th className="border-b border-black p-2 bg-gray-100 text-right">Monto</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td className="border-b border-r border-black p-2">SSO</td>
-                            <td className="border-b border-black p-2 text-right">{numFormat(calc.sso)}</td>
+                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.sso)}</td>
                         </tr>
                         <tr>
                             <td className="border-b border-r border-black p-2">Paro Forzoso</td>
-                            <td className="border-b border-black p-2 text-right">{numFormat(calc.rpe)}</td>
+                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.rpe)}</td>
                         </tr>
                         <tr>
                             <td className="border-b border-r border-black p-2">FAOV</td>
-                            <td className="border-b border-black p-2 text-right">{numFormat(calc.faov)}</td>
+                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.faov)}</td>
                         </tr>
-                        {calc.islrValue > 0 && (
-                            <tr>
-                                <td className="border-b border-r border-black p-2">I.S.L.R</td>
-                                <td className="border-b border-black p-2 text-right">{numFormat(calc.islrValue)}</td>
-                            </tr>
-                        )}
-                        {record.adelantos > 0 && (
-                            <tr>
-                                <td className="border-b border-r border-black p-2">Adelantos de Quincena</td>
-                                <td className="border-b border-black p-2 text-right">{numFormat(record.adelantos)}</td>
-                            </tr>
-                        )}
-                        {record.inasistencias > 0 && (
-                            <tr>
-                                <td className="border-b border-r border-black p-2">Inasistencias</td>
-                                <td className="border-b border-black p-2 text-right">{numFormat(record.inasistencias)}</td>
-                            </tr>
-                        )}
+                        <tr>
+                            <td className="border-b border-r border-black p-2">I.S.L.R</td>
+                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.islrValue)}</td>
+                        </tr>
+                        <tr>
+                            <td className="border-b border-r border-black p-2">Adelantos de Quincena</td>
+                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(record.adelantos)}</td>
+                        </tr>
+                        <tr>
+                            <td className="border-b border-r border-black p-2">Inasistencias</td>
+                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(record.inasistencias)}</td>
+                        </tr>
                     </tbody>
                     <tfoot>
                         <tr>
@@ -164,7 +148,7 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                     <tbody>
                         <tr>
                             <th className="border-r border-black p-3 bg-gray-200 uppercase text-right w-2/3 tracking-wider">Neto A Pagar:</th>
-                            <th className="p-3 text-right bg-gray-100 text-lg">${numFormat(calc.aPagar)}</th>
+                            <th className="p-3 text-right bg-gray-100 text-lg">Bs. {numFormat(calc.aPagar)}</th>
                         </tr>
                     </tbody>
                 </table>
@@ -196,8 +180,8 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
 
             <div className="text-center mb-6">
                 <h1 className="font-bold text-lg underline uppercase mb-1">Recibo de Cestaticket</h1>
-                <p className="text-sm font-semibold text-slate-700 mb-1">Tasa BCV Aplicada: <span className="text-slate-900">Bs. {config.tasaBCV1}</span></p>
-                <p className="text-sm font-semibold text-slate-700">Sueldo Base Mensual Asignado: <span className="text-slate-900">${numFormat(emp.sueldoMensual || 0)}</span></p>
+                <p className="text-sm font-semibold text-slate-700 mb-1">Tasa del día: <span className="text-slate-900">$ {config.tasaBCV1}</span></p>
+                <p className="text-sm font-semibold text-slate-700">Sueldo Base Mensual Asignado: <span className="text-slate-900">Bs. {numFormat(emp.sueldoMensual || 0)}</span></p>
             </div>
 
             <div className="border border-black mb-6">
@@ -222,11 +206,7 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                     <tbody>
                         <tr>
                             <td className="border-b border-r border-black p-2">Cestaticket Oficial (Base Legal) - Días: {record.diasTrabajados + record.diasVacaciones}</td>
-                            <td className="border-b border-black p-2 text-right">{numFormat(calc.cestaticket1)}</td>
-                        </tr>
-                        <tr>
-                            <td className="border-b border-r border-black p-2">Bono Cestaticket Adicional Indexado - Días: {record.diasTrabajados + record.diasVacaciones}</td>
-                            <td className="border-b border-black p-2 text-right">{numFormat(calc.cestaticket2)}</td>
+                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.cestaticket1)}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -237,7 +217,7 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                     <tbody>
                         <tr>
                             <th className="border-r border-black p-3 bg-gray-200 uppercase text-right w-2/3 tracking-wider">Total Cestaticket A Pagar:</th>
-                            <th className="p-3 text-right bg-gray-100 text-lg">Bs. {numFormat(calc.cestaticket1 + calc.cestaticket2)}</th>
+                            <th className="p-3 text-right bg-gray-100 text-lg">Bs. {numFormat(calc.cestaticket1)}</th>
                         </tr>
                     </tbody>
                 </table>

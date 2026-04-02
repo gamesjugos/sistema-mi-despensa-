@@ -123,7 +123,7 @@ export default function Nomina() {
             { header: 'ADELANTOS', key: 'adelantos', width: 12 },
             { header: 'INASIST. / OTROS', key: 'inasistencias', width: 18 },
             { header: 'TOTAL DEDUCCIONES', key: 'deducciones', width: 18 },
-            { header: 'NETO A PAGAR ($)', key: 'neto', width: 15 },
+            { header: 'NETO A PAGAR (Bs.)', key: 'neto', width: 15 },
             { header: 'APORTE PENSIONES (9%)', key: 'pensiones', width: 22 }
         ];
 
@@ -162,7 +162,7 @@ export default function Nomina() {
             });
             // Columns with money formats
             [4,5,6,7,9,10,11,12,13,14,15,16,17,18,19,20,21].forEach(colIndex => {
-                dataRow.getCell(colIndex).numFmt = '"$"#,##0.00';
+                dataRow.getCell(colIndex).numFmt = '"Bs." #,##0.00';
             });
         });
 
@@ -244,13 +244,13 @@ export default function Nomina() {
                             </div>
                             <div className="text-right">
                                 <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">A Pagar Neto</p>
-                                <p className="text-xl font-bold text-green-600">${numFormat(row.calc.aPagar)}</p>
+                                <p className="text-xl font-bold text-green-600">Bs. {numFormat(row.calc.aPagar)}</p>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-2 mt-3 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl text-xs">
                             <div>
                                 <p className="text-slate-500">Sueldo Asignado</p>
-                                <p className="font-semibold">${numFormat(row.emp.sueldoMensual)}</p>
+                                <p className="font-semibold">Bs. {numFormat(row.emp.sueldoMensual)}</p>
                             </div>
                             <div>
                                 <p className="text-slate-500">Días Trabajados</p>
@@ -258,16 +258,16 @@ export default function Nomina() {
                             </div>
                             <div>
                                 <p className="text-slate-500">Subtotal Ingresos</p>
-                                <p className="font-semibold">${numFormat(row.calc.subtotalIngresos)}</p>
+                                <p className="font-semibold">Bs. {numFormat(row.calc.subtotalIngresos)}</p>
                             </div>
                             <div>
                                 <p className="text-slate-500">Total Deducciones</p>
-                                <p className="font-semibold text-red-500">${numFormat(row.calc.totalDeducciones)}</p>
+                                <p className="font-semibold text-red-500">Bs. {numFormat(row.calc.totalDeducciones)}</p>
                             </div>
                             {row.calc.aportePensionesCalc > 0 && (
                             <div className="col-span-2 mt-1 border-t border-slate-200 dark:border-slate-800 pt-2 flex justify-between">
                                 <p className="text-slate-500">Aporte Pensiones (Patronal)</p>
-                                <p className="font-bold text-purple-600">${numFormat(row.calc.aportePensionesCalc)}</p>
+                                <p className="font-bold text-purple-600">Bs. {numFormat(row.calc.aportePensionesCalc)}</p>
                             </div>
                             )}
                         </div>
@@ -285,12 +285,12 @@ export default function Nomina() {
                 <div className="bg-primary-50 dark:bg-primary-900/10 p-4 rounded-2xl border border-primary-200 dark:border-primary-900/50 shadow-sm mt-4">
                     <h3 className="font-bold text-primary-900 dark:text-primary-100 text-lg mb-2">TOTALES GENERALES</h3>
                     <div className="space-y-2 text-sm">
-                        <div className="flex justify-between font-bold"><span>Total Netos a Pagar:</span> <span className="text-green-600">${numFormat(totPagado)}</span></div>
-                        <div className="flex justify-between"><span>Sueldos Asignados:</span> <span>${numFormat(payrollData.reduce((a,b)=>a+b.emp.sueldoMensual,0))}</span></div>
-                        <div className="flex justify-between"><span>Jornada Diaria Promedio:</span> <span>${numFormat(payrollData.reduce((a,b)=>a+b.calc.sueldoDiario,0))}</span></div>
-                        <div className="flex justify-between"><span>Jornada por Hora:</span> <span>${numFormat(payrollData.reduce((a,b)=>a+b.calc.sueldoHora,0))}</span></div>
-                        <div className="flex justify-between text-red-500"><span>Retenciones Ley (SSO/FAOV/PF):</span> <span>${numFormat(payrollData.reduce((a,b)=>a+b.calc.sso + b.calc.faov + b.calc.rpe,0))}</span></div>
-                        <div className="flex justify-between text-purple-600 font-semibold border-t border-primary-200 dark:border-primary-800 pt-2"><span>Total Aporte Pensiones:</span> <span>${numFormat(payrollData.reduce((a,b)=>a+b.calc.aportePensionesCalc,0))}</span></div>
+                        <div className="flex justify-between font-bold"><span>Total Netos a Pagar:</span> <span className="text-green-600">Bs. {numFormat(totPagado)}</span></div>
+                        <div className="flex justify-between"><span>Sueldos Asignados:</span> <span>Bs. {numFormat(payrollData.reduce((a,b)=>a+b.emp.sueldoMensual,0))}</span></div>
+                        <div className="flex justify-between"><span>Jornada Diaria Promedio:</span> <span>Bs. {numFormat(payrollData.reduce((a,b)=>a+b.calc.sueldoDiario,0))}</span></div>
+                        <div className="flex justify-between"><span>Jornada por Hora:</span> <span>Bs. {numFormat(payrollData.reduce((a,b)=>a+b.calc.sueldoHora,0))}</span></div>
+                        <div className="flex justify-between text-red-500"><span>Retenciones Ley (SSO/FAOV/PF):</span> <span>Bs. {numFormat(payrollData.reduce((a,b)=>a+b.calc.sso + b.calc.faov + b.calc.rpe,0))}</span></div>
+                        <div className="flex justify-between text-purple-600 font-semibold border-t border-primary-200 dark:border-primary-800 pt-2"><span>Total Aporte Pensiones:</span> <span>Bs. {numFormat(payrollData.reduce((a,b)=>a+b.calc.aportePensionesCalc,0))}</span></div>
                     </div>
                 </div>
             </div>
@@ -308,18 +308,18 @@ export default function Nomina() {
                             <th className="p-2 border-r bg-slate-100 dark:bg-slate-900">Jornada<br/>Hora</th>
                             <th className="p-2 border-r bg-slate-100 dark:bg-slate-900">Salario<br/>Semanal</th>
                             <th className="p-2">Días<br/>Trab.</th>
-                            <th className="p-2">Horas Noct.<br/>(Bono $)</th>
-                            <th className="p-2">Domingo<br/>Trab. ($)</th>
-                            <th className="p-2">Feriado<br/>Trab. ($)</th>
+                            <th className="p-2">Horas Noct.<br/>(Bono Bs.)</th>
+                            <th className="p-2">Domingo<br/>Trab. (Bs.)</th>
+                            <th className="p-2">Feriado<br/>Trab. (Bs.)</th>
                             <th className="p-2 border-r border-l-2 border-l-slate-400 bg-slate-100 dark:bg-slate-900">Sueldo<br/>Real</th>
-                            <th className="p-2 text-slate-900 font-bold bg-slate-300 dark:bg-slate-700 text-center border-r-2 border-r-slate-400">Subtotal<br/>Ingresos ($)</th>
+                            <th className="p-2 text-slate-900 font-bold bg-slate-300 dark:bg-slate-700 text-center border-r-2 border-r-slate-400">Subtotal<br/>Ingresos (Bs.)</th>
                             <th className="p-2 bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300">Ret.<br/>SSO {config.porcentajeSSO}%</th>
                             <th className="p-2 bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300">Ret.<br/>PF {config.porcentajeParo}%</th>
                             <th className="p-2 bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 border-r text-center">Ret.<br/>FAOV {config.porcentajeFAOV}%</th>
                             <th className="p-2">Adelantos</th>
                             <th className="p-2">Inasist.</th>
                             <th className="p-2 border-l text-center">Total<br/>Deducc.</th>
-                            <th className="p-2 bg-slate-200 dark:bg-slate-800 font-bold border-l-2 border-l-slate-400">A PAGAR ($)</th>
+                            <th className="p-2 bg-slate-200 dark:bg-slate-800 font-bold border-l-2 border-l-slate-400">A PAGAR (Bs.)</th>
                             <th className="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 font-bold text-center border-l-2 border-l-slate-400">APORTE<br/>PENSIONES</th>
                             <th className="p-2 sticky right-0 z-30 bg-slate-200 dark:bg-slate-800 text-center">✏️</th>
                         </tr>
@@ -355,8 +355,8 @@ export default function Nomina() {
                                 <td className="p-2 text-right">{numFormat(row.record.adelantos)}</td>
                                 <td className="p-2 text-right text-red-500">{numFormat(row.record.inasistencias)}</td>
                                 <td className="p-2 text-right text-red-600 font-bold">{numFormat(row.calc.totalDeducciones)}</td>
-                                <td className="p-2 bg-slate-100 dark:bg-slate-800 font-bold border-l-2 border-l-slate-300 text-right text-base text-green-700 dark:text-green-500">${numFormat(row.calc.aPagar)}</td>
-                                <td className="p-2 border-l-2 border-l-slate-300 bg-purple-50 dark:bg-purple-900/10 font-bold text-purple-700 text-right">${numFormat(row.calc.aportePensionesCalc)}</td>
+                                <td className="p-2 bg-slate-100 dark:bg-slate-800 font-bold border-l-2 border-l-slate-300 text-right text-base text-green-700 dark:text-green-500">Bs. {numFormat(row.calc.aPagar)}</td>
+                                <td className="p-2 border-l-2 border-l-slate-300 bg-purple-50 dark:bg-purple-900/10 font-bold text-purple-700 text-right">Bs. {numFormat(row.calc.aportePensionesCalc)}</td>
                                 <td className="p-1 sticky right-0 z-10 bg-white dark:bg-dark-bg text-center">
                                     <div className="flex justify-center flex-nowrap shrink-0">
                                         <button onClick={() => setPrintingEmp(row)} className="p-1 text-blue-600 dark:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded mr-1">
@@ -389,8 +389,8 @@ export default function Nomina() {
                             <td className="p-2 text-right">{numFormat(payrollData.reduce((a,b)=>a+b.record.adelantos,0))}</td>
                             <td className="p-2 text-right">{numFormat(payrollData.reduce((a,b)=>a+b.record.inasistencias,0))}</td>
                             <td className="p-2 text-right">{numFormat(payrollData.reduce((a,b)=>a+b.calc.totalDeducciones,0))}</td>
-                            <td className="p-2 border-l-2 border-l-slate-400 text-right text-green-700 dark:text-green-500 text-lg">${numFormat(totPagado)}</td>
-                            <td className="p-2 border-l-2 border-l-slate-400 text-right text-purple-700 dark:text-purple-400 text-base">${numFormat(payrollData.reduce((a,b)=>a+b.calc.aportePensionesCalc,0))}</td>
+                            <td className="p-2 border-l-2 border-l-slate-400 text-right text-green-700 dark:text-green-500 text-lg">Bs. {numFormat(totPagado)}</td>
+                            <td className="p-2 border-l-2 border-l-slate-400 text-right text-purple-700 dark:text-purple-400 text-base">Bs. {numFormat(payrollData.reduce((a,b)=>a+b.calc.aportePensionesCalc,0))}</td>
                             <td className="sticky right-0 bg-slate-200 dark:bg-slate-800 z-30"></td>
                         </tr>
                     </tfoot>
@@ -407,7 +407,7 @@ export default function Nomina() {
                         </div>
                         <form onSubmit={handleSaveRecord} className="p-6 space-y-4">
                             <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 mb-4">
-                                <label className="block text-sm font-bold uppercase mb-2 text-primary-600">Sueldo Asignado Fijo ($)</label>
+                                <label className="block text-sm font-bold uppercase mb-2 text-primary-600">Sueldo Asignado Fijo (Bs.)</label>
                                 <input min="0" step="0.01" type="number" value={sueldoForm} onChange={e => setSueldoForm(Number(e.target.value))} className="w-full px-3 py-2 border rounded p-1 dark:bg-black font-bold text-lg text-slate-900 dark:text-white" />
                                 <p className="text-xs text-slate-500 mt-1">Este es el sueldo global del empleado, afectará la Jornada Diaria y Semanal.</p>
                             </div>
@@ -434,11 +434,11 @@ export default function Nomina() {
                                     <input min="0" step="1" type="number" value={recordForm.feriadosTrabajados === 0 ? '' : recordForm.feriadosTrabajados} onChange={e => setRecordForm({...recordForm, feriadosTrabajados: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs uppercase mb-1 opacity-70">Adelantos ($)</label>
+                                    <label className="block text-xs uppercase mb-1 opacity-70">Adelantos (Bs.)</label>
                                     <input min="0" step="0.01" type="number" value={recordForm.adelantos === 0 ? '' : recordForm.adelantos} onChange={e => setRecordForm({...recordForm, adelantos: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs uppercase mb-1 opacity-70">Inasistencias ($)</label>
+                                    <label className="block text-xs uppercase mb-1 opacity-70">Inasistencias (Bs.)</label>
                                     <input min="0" step="0.01" type="number" value={recordForm.inasistencias === 0 ? '' : recordForm.inasistencias} onChange={e => setRecordForm({...recordForm, inasistencias: e.target.value === '' ? 0 : Number(e.target.value)})} className="w-full px-3 py-2 border rounded p-1 dark:bg-black" />
                                 </div>
                                 <div className="col-span-2 md:col-span-3 mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -473,7 +473,7 @@ export default function Nomina() {
                         <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
                             
                             <div className="bg-purple-50 dark:bg-purple-900/10 p-4 rounded-xl border border-purple-200 dark:border-purple-900/50">
-                                <label className="block text-sm font-bold text-purple-800 dark:text-purple-300 mb-2">Monto de Aporte a Pensiones Patronal ($)</label>
+                                <label className="block text-sm font-bold text-purple-800 dark:text-purple-300 mb-2">Monto de Aporte a Pensiones Patronal (Bs.)</label>
                                 <input min="0" step="0.01" type="number" value={configForm.aportePensiones} onChange={e => setConfigForm({...configForm, aportePensiones: Number(e.target.value)})} className="w-full border rounded px-3 py-2 font-bold dark:bg-black" />
                             </div>
 

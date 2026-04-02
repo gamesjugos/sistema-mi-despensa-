@@ -158,7 +158,7 @@ export default function Cestatickets() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Cestatickets {monthNames[currentMonth-1]} {currentYear}</h1>
-                    <p className="text-sm text-slate-500 mt-1">Tasa BCV aplicable: <span className="font-bold text-blue-600 dark:text-blue-400">Bs. {config.tasaBCV1}</span></p>
+                    <p className="text-sm text-slate-500 mt-1">Tasa del día: <span className="font-bold text-blue-600 dark:text-blue-400">$ {config.tasaBCV1}</span></p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
                     <select value={empresaFiltro} onChange={e => setEmpresaFiltro(e.target.value)} className="px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-dark-bg text-sm font-bold rounded-xl text-primary-600 outline-none flex-1 md:flex-none">
@@ -317,11 +317,11 @@ export default function Cestatickets() {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm mb-1 font-semibold">Monto Base Cesta 1 ($)</label>
+                                    <label className="block text-sm mb-1 font-semibold">Monto Base Cesta 1 (Bs.)</label>
                                     <input min="0" step="0.01" type="number" value={configForm.montoCesta1} onChange={e => setConfigForm({...configForm, montoCesta1: Number(e.target.value)})} className="w-full border rounded px-3 py-2 dark:bg-black" />
                                 </div>
                                 <div>
-                                    <label className="block text-sm mb-1 font-semibold">Monto Base Cesta 2 ($)</label>
+                                    <label className="block text-sm mb-1 font-semibold">Monto Base Cesta 2 (Bs.)</label>
                                     <input min="0" step="0.01" type="number" value={configForm.montoCesta2} onChange={e => setConfigForm({...configForm, montoCesta2: Number(e.target.value)})} className="w-full border rounded px-3 py-2 dark:bg-black" />
                                 </div>
                             </div>

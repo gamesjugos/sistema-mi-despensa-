@@ -70,33 +70,33 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                     <tbody>
                         <tr>
                             <td className="border-b border-r border-black p-2">Sueldo Base (Días Trab: {record.diasTrabajados})</td>
-                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.sueldoReal)}</td>
+                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.sueldoReal)}</span></div></td>
                         </tr>
                         <tr>
                             <td className="border-b border-r border-black p-2">Horas Nocturnas ({record.horasNocturnas}H)</td>
-                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.bonoNocturno)}</td>
+                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.bonoNocturno)}</span></div></td>
                         </tr>
                         <tr>
                             <td className="border-b border-r border-black p-2">Domingos Trabajados ({record.domingosTrabajados}D)</td>
-                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.domingosValor)}</td>
+                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.domingosValor)}</span></div></td>
                         </tr>
                         <tr>
                             <td className="border-b border-r border-black p-2">Feriados Trabajados ({record.feriadosTrabajados}D)</td>
-                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.feriadosValor)}</td>
+                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.feriadosValor)}</span></div></td>
                         </tr>
                         <tr>
                             <td className="border-b border-r border-black p-2">Bonos Adicionales</td>
-                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(record.bonosAdicionales)}</td>
+                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(record.bonosAdicionales)}</span></div></td>
                         </tr>
                         <tr>
                             <td className="border-b border-r border-black p-2">Subsidios / Otros</td>
-                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(record.subsidios)}</td>
+                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(record.subsidios)}</span></div></td>
                         </tr>
                     </tbody>
                     <tfoot>
                         <tr>
                             <th className="border-t border-r border-black p-2 text-right">Total Ingresos:</th>
-                            <th className="border-t border-black p-2 text-right bg-gray-100">Bs. {numFormat(calc.subtotalIngresos + record.subsidios)}</th>
+                            <th className="border-t border-black p-2 bg-gray-100"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.subtotalIngresos + record.subsidios)}</span></div></th>
                         </tr>
                     </tfoot>
                 </table>
@@ -111,27 +111,27 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                     <tbody>
                         <tr>
                             <td className="border-b border-r border-black p-2">SSO</td>
-                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.sso)}</td>
+                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.sso)}</span></div></td>
                         </tr>
                         <tr>
                             <td className="border-b border-r border-black p-2">Paro Forzoso</td>
-                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.rpe)}</td>
+                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.rpe)}</span></div></td>
                         </tr>
                         <tr>
                             <td className="border-b border-r border-black p-2">FAOV</td>
-                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.faov)}</td>
+                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.faov)}</span></div></td>
                         </tr>
                         <tr>
                             <td className="border-b border-r border-black p-2">I.S.L.R</td>
-                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.islrValue)}</td>
+                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.islrValue)}</span></div></td>
                         </tr>
                         <tr>
                             <td className="border-b border-r border-black p-2">Adelantos de Quincena</td>
-                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(record.adelantos)}</td>
+                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(record.adelantos)}</span></div></td>
                         </tr>
                         <tr>
                             <td className="border-b border-r border-black p-2">Inasistencias</td>
-                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(record.inasistencias)}</td>
+                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(record.inasistencias)}</span></div></td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -148,7 +148,7 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                     <tbody>
                         <tr>
                             <th className="border-r border-black p-3 bg-gray-200 uppercase text-right w-2/3 tracking-wider">Neto A Pagar:</th>
-                            <th className="p-3 text-right bg-gray-100 text-lg">Bs. {numFormat(calc.aPagar)}</th>
+                            <th className="p-3 bg-gray-100 text-lg"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.aPagar)}</span></div></th>
                         </tr>
                     </tbody>
                 </table>
@@ -206,7 +206,7 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                     <tbody>
                         <tr>
                             <td className="border-b border-r border-black p-2">Cestaticket Oficial (Base Legal) - Días: {record.diasTrabajados + record.diasVacaciones}</td>
-                            <td className="border-b border-black p-2 text-right">Bs. {numFormat(calc.cestaticket1)}</td>
+                            <td className="border-b border-black p-2"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.cestaticket1)}</span></div></td>
                         </tr>
                     </tbody>
                 </table>
@@ -217,7 +217,7 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
                     <tbody>
                         <tr>
                             <th className="border-r border-black p-3 bg-gray-200 uppercase text-right w-2/3 tracking-wider">Total Cestaticket A Pagar:</th>
-                            <th className="p-3 text-right bg-gray-100 text-lg">Bs. {numFormat(calc.cestaticket1)}</th>
+                            <th className="p-3 bg-gray-100 text-lg"><div className="flex justify-between"><span>Bs.</span><span>{numFormat(calc.cestaticket1)}</span></div></th>
                         </tr>
                     </tbody>
                 </table>
@@ -236,25 +236,25 @@ export default function ReceiptModal({ emp, record, calc, onClose, initialType =
 
     return (
         <div className="fixed inset-0 z-[100] flex flex-col bg-slate-100 dark:bg-slate-900 overflow-y-auto">
-            <div className="sticky top-0 z-10 bg-white dark:bg-dark-card border-b border-slate-200 dark:border-slate-800 p-4 shadow-sm flex items-center justify-between no-print">
-                <div className="flex items-center gap-4">
-                    <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500 transition-colors">
+            <div className="sticky top-0 z-10 bg-white dark:bg-dark-card border-b border-slate-200 dark:border-slate-800 p-4 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 no-print">
+                <div className="flex items-start lg:items-center gap-3 w-full lg:w-auto">
+                    <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-500 transition-colors shrink-0">
                         <X size={24} />
                     </button>
                     <div>
-                        <h2 className="font-bold text-lg dark:text-white">Imprimir Recibo de {emp.nombre}</h2>
-                        <p className="text-sm text-slate-500">Haz clic en Imprimir y luego selecciona tu impresora, o elige "Guardar como PDF".</p>
+                        <h2 className="font-bold text-base lg:text-lg dark:text-white leading-tight mt-1 lg:mt-0">Imprimir Recibo de {emp.nombre}</h2>
+                        <p className="text-xs lg:text-sm text-slate-500 hidden md:block mt-1">Haz clic en Imprimir y luego selecciona tu impresora, o elige "Guardar como PDF".</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-4">
-                    <select value={type} onChange={(e) => setType(e.target.value as any)} className="px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm bg-white dark:bg-black font-semibold text-slate-700 dark:text-slate-200 outline-none">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto pl-12 lg:pl-0">
+                    <select value={type} onChange={(e) => setType(e.target.value as any)} className="px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-black font-semibold text-slate-700 dark:text-slate-200 outline-none w-full sm:w-auto">
                         <option value="NOMINA">Sólo Nómina</option>
                         <option value="CESTATICKET">Sólo Cestaticket</option>
                         <option value="AMBOS">Nómina y Cestaticket</option>
                     </select>
-                    <button onClick={handlePrint} className="flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold transition-colors shadow-sm">
+                    <button onClick={handlePrint} className="flex items-center justify-center gap-2 px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold transition-colors shadow-sm w-full sm:w-auto">
                         <Printer size={20} />
-                        <span>Imprimir / Exportar PDF</span>
+                        <span>Imprimir / Exportar</span>
                     </button>
                 </div>
             </div>
